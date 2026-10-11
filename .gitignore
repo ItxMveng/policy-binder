@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Secrets : jamais versionnés
+.env
+
+# Données téléchargées ou générées (reproductibles par les scripts)
+data/raw/
+data/processed/
+data/index/
+eval/results/*.jsonl

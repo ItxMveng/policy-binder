@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  qualite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Installer Python 3.12 et les dépendances
+        run: uv sync --frozen --python 3.12
+      - name: Ruff (lint + format)
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Mypy strict
+        run: uv run mypy --strict src
+      - name: Tests
+        run: uv run pytest -q
+      - name: Image Docker
+        run: docker build -t studeria-assistant:ci .

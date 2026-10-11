@@ -1,0 +1,51 @@
+[project]
+name = "studeria-assistant"
+version = "0.1.0"
+description = "Assistant documentaire qui cite ses sources et sait s'abstenir, évalué sur un jeu de test versionné."
+readme = "README.md"
+authors = [
+    { name = "Francis Itoua", email = "francisitoua05@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.143.0",
+    "fastembed>=0.9.0",
+    "httpx>=0.28.1",
+    "pydantic>=2",
+    "pydantic-settings>=2.15.0",
+    "pypdf>=6.20.0",
+    "pyyaml>=6.0.3",
+    "qdrant-client>=1.19.1",
+    "uvicorn>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "ruff>=0.17.0",
+    "types-pyyaml>=6.0.12.20260906",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["fastembed.*", "qdrant_client.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
