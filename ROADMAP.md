@@ -4,7 +4,7 @@
 - [x] P1-01 Sources officielles et téléchargement — data/sources.yaml (≥ 6 documents, URL vérifiées, date de consultation), scripts/download_sources.py, data/raw/ ignoré par git, tests du chargement des sources (fait le 2026-10-11)
 - [x] P1-02 Ingestion PDF en passages — extraction du texte page par page, nettoyage, découpage avec chevauchement et métadonnées (document, page), tests (fait le 2026-10-11)
 - [x] P1-03 Index dense et recherche (base naïve) — embeddings multilingues locaux, index Qdrant local, commande de recherche, tests avec un embedder factice (fait le 2026-10-11)
-- [ ] P1-04 Réponse avec citations — interface LLMProvider + implémentation Mistral, prompt à citations [n], abstention si aucun passage, API POST /ask, tests avec un fournisseur factice
+- [x] P1-04 Réponse avec citations — interface LLMProvider + implémentation Mistral, prompt à citations [n], abstention si aucun passage, API POST /ask, tests avec un fournisseur factice (fait le 2026-10-11)
 
 ## Jeu d'évaluation et mesure
 - [ ] P1-05 Jeu d'évaluation versionné — eval/questions.jsonl (40 avec réponse + source attendue, 20 hors corpus), schéma Pydantic, test de cohérence avec sources.yaml

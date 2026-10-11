@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-11 — P1-04 Réponse avec citations
+- Fait : réponse avec citations : interface LLMProvider et implémentation Mistral, prompt à passages numérotés (titre + page), abstention par phrase imposée, API POST /ask ; testé avec un fournisseur factice, pas encore avec le vrai modèle (clé Mistral non configurée).
+- Chiffre mesuré : aucun
+- Décision technique : logique RAG écrite à la main (environ 100 lignes) plutôt qu'une chaîne de framework : prompt, citations et abstention restent visibles, testables et évaluables.
+- Visuel disponible : aucun
+
 ## 2026-10-11 — P1-03 Index dense et recherche (base naïve)
 - Fait : index dense de la base naïve : embeddings multilingues locaux (MiniLM, sans clé ni coût par appel) dans Qdrant en mode embarqué, scripts de construction et de recherche avec document et page.
 - Chiffre mesuré : aucun

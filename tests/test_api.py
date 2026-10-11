@@ -1,9 +1,42 @@
+import pytest
 from fastapi.testclient import TestClient
 
-from studeria_assistant.api import app
+from studeria_assistant.api import app, get_assistant
+from studeria_assistant.rag import Assistant
+from tests.test_rag import PASSAGES, FakeLLM, FakeRetriever
+
+client = TestClient(app)
 
 
 def test_health_returns_ok() -> None:
-    response = TestClient(app).get("/health")
+    response = client.get("/health")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+
+
+def test_ask_returns_answer_with_citations() -> None:
+    assistant = Assistant(FakeRetriever(PASSAGES), FakeLLM("Il faut le déclarer [1]."))
+    app.dependency_overrides[get_assistant] = lambda: assistant
+    try:
+        response = client.post("/ask", json={"question": "Puis-je utiliser une IA ?"})
+    finally:
+        app.dependency_overrides.clear()
+    assert response.status_code == 200
+    body = response.json()
+    assert body["citations"][0]["title"] == "Charte IA"
+    assert body["abstained"] is False
+
+
+def test_ask_rejects_empty_question() -> None:
+    assistant = Assistant(FakeRetriever(PASSAGES), FakeLLM("non appelé"))
+    app.dependency_overrides[get_assistant] = lambda: assistant
+    try:
+        assert client.post("/ask", json={"question": ""}).status_code == 422
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_ask_without_key_returns_503(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("MISTRAL_API_KEY", raising=False)
+    monkeypatch.chdir("/")  # aucun fichier .env lu
+    assert client.post("/ask", json={"question": "Bonjour ?"}).status_code == 503

@@ -13,7 +13,7 @@ from studeria_assistant.ingest import read_chunks
 def main() -> None:
     settings = get_settings()
     chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")
-    client = QdrantClient(path=str(settings.data_dir / "index" / "qdrant"))
+    client = QdrantClient(path=str(settings.qdrant_path))
     start = time.perf_counter()
     DenseIndex(client, FastEmbedEmbedder()).build(chunks)
     print(f"{len(chunks)} passages indexés en {time.perf_counter() - start:.1f} s")

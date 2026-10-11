@@ -12,7 +12,7 @@ from studeria_assistant.index import DenseIndex
 def main() -> None:
     question = sys.argv[1]
     k = int(sys.argv[2]) if len(sys.argv) > 2 else 5
-    client = QdrantClient(path=str(get_settings().data_dir / "index" / "qdrant"))
+    client = QdrantClient(path=str(get_settings().qdrant_path))
     for hit in DenseIndex(client, FastEmbedEmbedder()).search(question, k):
         print(f"{hit.score:.3f}  {hit.chunk.source_id} p.{hit.chunk.page}")
         print(f"       {hit.chunk.text[:200]}")

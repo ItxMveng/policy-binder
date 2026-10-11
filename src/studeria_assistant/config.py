@@ -13,6 +13,12 @@ class Settings(BaseSettings):
 
     data_dir: Path = ROOT_DIR / "data"
     mistral_api_key: SecretStr | None = None
+    mistral_model: str = "mistral-small-latest"
+    top_k: int = 5
+
+    @property
+    def qdrant_path(self) -> Path:
+        return self.data_dir / "index" / "qdrant"
 
 
 def get_settings() -> Settings:
