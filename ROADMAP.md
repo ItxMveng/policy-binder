@@ -7,7 +7,7 @@
 - [x] P1-04 Réponse avec citations — interface LLMProvider + implémentation Mistral, prompt à citations [n], abstention si aucun passage, API POST /ask, tests avec un fournisseur factice (fait le 2026-10-11)
 
 ## Jeu d'évaluation et mesure
-- [ ] P1-05 Jeu d'évaluation versionné — eval/questions.jsonl (40 avec réponse + source attendue, 20 hors corpus), schéma Pydantic, test de cohérence avec sources.yaml
+- [x] P1-05 Jeu d'évaluation versionné — eval/questions.jsonl (40 avec réponse + source attendue, 20 hors corpus), schéma Pydantic, test de cohérence avec sources.yaml (fait le 2026-10-11)
 - [ ] P1-06 Mesure des erreurs de la base naïve — script d'évaluation (exactitude par juge LLM, citations, précision du contexte, abstention correcte, refus injustifiés, latence p50/p95, coût / 1 000 questions), résultats exploratoires dans docs/evaluation.md
 
 ## Amélioration de la récupération et de l'abstention

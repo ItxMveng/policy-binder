@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-11 — P1-05 Jeu d'évaluation versionné
+- Fait : jeu d'évaluation versionné de 60 questions (40 avec réponse de référence, page attendue et extrait vérifiable ; 20 hors corpus) dans eval/questions.jsonl, avec schéma, test de cohérence en CI et script de vérification sur les PDF. À valider par Francis (procédure dans eval/A-VALIDER.md).
+- Chiffre mesuré : 40 extraits de référence sur 40 retrouvés sur la page attendue (scripts/check_eval_set.py, 2026-10-11)
+- Décision technique : questions écrites comme un utilisateur et vérifiées mécaniquement, plutôt que générées par un LLM : mesure plus honnête, au prix d'un petit jeu dont les résultats resteront exploratoires.
+- Visuel disponible : aucun
+
 ## 2026-10-11 — P1-04 Réponse avec citations
 - Fait : réponse avec citations : interface LLMProvider et implémentation Mistral, prompt à passages numérotés (titre + page), abstention par phrase imposée, API POST /ask ; testé avec un fournisseur factice, pas encore avec le vrai modèle (clé Mistral non configurée).
 - Chiffre mesuré : aucun
