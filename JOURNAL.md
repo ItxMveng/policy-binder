@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-11 — P1-03 Index dense et recherche (base naïve)
+- Fait : index dense de la base naïve : embeddings multilingues locaux (MiniLM, sans clé ni coût par appel) dans Qdrant en mode embarqué, scripts de construction et de recherche avec document et page.
+- Chiffre mesuré : aucun
+- Décision technique : embeddings locaux derrière une interface Embedder : reproductible et gratuit, et remplaçable par mistral-embed si l'évaluation le justifie.
+- Visuel disponible : aucun
+
 ## 2026-10-11 — P1-02 Ingestion PDF en passages
 - Fait : pipeline d'ingestion : texte extrait page par page, nettoyé (césures, sommaires), découpé en passages de 1 000 caractères au plus avec chevauchement et métadonnées document + page.
 - Chiffre mesuré : 546 passages pour 9 documents (sortie de scripts/ingest.py)
