@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-11 — P1-02 Ingestion PDF en passages
+- Fait : pipeline d'ingestion : texte extrait page par page, nettoyé (césures, sommaires), découpé en passages de 1 000 caractères au plus avec chevauchement et métadonnées document + page.
+- Chiffre mesuré : 546 passages pour 9 documents (sortie de scripts/ingest.py)
+- Décision technique : un passage ne traverse jamais une page : citations exactes, au prix d'articles parfois répartis sur deux passages.
+- Visuel disponible : aucun
+
 ## 2026-10-11 — P1-01 Sources officielles et téléchargement
 - Fait : corpus de 9 documents publics (ENIB / Bretagne INP, Université de Brest, IMT Atlantique) référencés dans data/sources.yaml avec URL officielle et date de consultation ; script de téléchargement avec contrôle du format PDF et empreinte SHA-256.
 - Chiffre mesuré : 9 URL officielles sur 9 répondent avec un PDF (vérification du 2026-10-11 par scripts/download_sources.py)
