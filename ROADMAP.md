@@ -1,7 +1,7 @@
 # ROADMAP — P1 : Studeria Assistant (12 → 23 octobre 2026)
 
 ## Baseline fonctionnelle
-- [ ] P1-01 Sources officielles et téléchargement — data/sources.yaml (≥ 6 documents, URL vérifiées, date de consultation), scripts/download_sources.py, data/raw/ ignoré par git, tests du chargement des sources
+- [x] P1-01 Sources officielles et téléchargement — data/sources.yaml (≥ 6 documents, URL vérifiées, date de consultation), scripts/download_sources.py, data/raw/ ignoré par git, tests du chargement des sources (fait le 2026-10-11)
 - [ ] P1-02 Ingestion PDF en passages — extraction du texte page par page, nettoyage, découpage avec chevauchement et métadonnées (document, page), tests
 - [ ] P1-03 Index dense et recherche (base naïve) — embeddings multilingues locaux, index Qdrant local, commande de recherche, tests avec un embedder factice
 - [ ] P1-04 Réponse avec citations — interface LLMProvider + implémentation Mistral, prompt à citations [n], abstention si aucun passage, API POST /ask, tests avec un fournisseur factice

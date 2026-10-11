@@ -1,0 +1,67 @@
+# Corpus de Studeria Assistant : documents institutionnels PUBLICS, téléchargés depuis les sites officiels.
+# Les PDF ne sont pas versionnés : `uv run python scripts/download_sources.py` les place dans data/raw/.
+# consulted_on = date à laquelle l'URL a été vérifiée (réponse HTTP 200, type application/pdf).
+
+sources:
+  - id: bretagne-inp-reglement-interieur
+    title: Règlement intérieur de l'Institut national polytechnique de Bretagne (Bretagne INP, dont l'ENIB)
+    institution: ENIB / Bretagne INP
+    kind: reglement-interieur
+    url: https://www.enib.fr/wp-content/uploads/2025/07/Reglement-interieur-Bretagne-INP.pdf
+    consulted_on: 2026-10-11
+
+  - id: enib-droits-inscription-2025
+    title: Informations sur les droits d'inscription 2025-2026 (ENIB)
+    institution: ENIB / Bretagne INP
+    kind: scolarite
+    url: https://www.enib.fr/wp-content/uploads/2025/07/Informations-droits-dinscription-2025.pdf
+    consulted_on: 2026-10-11
+
+  - id: ubo-charte-numerique-2026
+    title: Charte du numérique de l'Université de Brest (2026)
+    institution: Université de Brest (UBO)
+    kind: charte
+    url: https://www.univ-brest.fr/sites/nouveau.univ-brest.fr/files/2026-03/Charte-numerique-UBO_2026.pdf
+    consulted_on: 2026-10-11
+
+  - id: ubo-charte-ia-generative-2026
+    title: Charte d'utilisation de l'IA générative à l'Université de Brest (2026)
+    institution: Université de Brest (UBO)
+    kind: charte
+    url: https://www.univ-brest.fr/sites/nouveau.univ-brest.fr/files/2026-03/Charte-IA-UBO_2026.pdf
+    consulted_on: 2026-10-11
+
+  - id: ubo-charte-examens
+    title: Charte des examens de l'Université de Brest
+    institution: Université de Brest (UBO)
+    kind: scolarite
+    url: https://www.univ-brest.fr/faculte-droit-economie-gestion-aes/sites/faculte-droit-economie-gestion-aes.www.univ-brest.fr/files/2024-06/charte_des_examens_ubo.pdf
+    consulted_on: 2026-10-11
+
+  - id: ubo-guide-etudes-master-segalen-2024
+    title: Guide des études en master 2024-2025, règles de progression (faculté Victor Segalen, UBO)
+    institution: Université de Brest (UBO)
+    kind: scolarite
+    url: https://www.univ-brest.fr/faculte-lettres-sciences-humaines-segalen/sites/faculte-lettres-sciences-humaines-segalen.www.univ-brest.fr/files/2024-07/Guide-des-etudes-masters24-25.pdf
+    consulted_on: 2026-10-11
+
+  - id: ubo-regime-etudes-licence-deg-2024
+    title: Régime des études en licence, faculté Droit, Économie-Gestion et AES (UBO, juin 2024)
+    institution: Université de Brest (UBO)
+    kind: scolarite
+    url: https://www.univ-brest.fr/faculte-droit-economie-gestion-aes/sites/faculte-droit-economie-gestion-aes.www.univ-brest.fr/files/2024-09/regime_des_etudes_licence_droit-economie-gestion_-_aes_juin_2024.pdf
+    consulted_on: 2026-10-11
+
+  - id: imt-atlantique-reglement-interieur-2024
+    title: Règlement intérieur d'IMT Atlantique (version adoptée le 11 avril 2024)
+    institution: IMT Atlantique
+    kind: reglement-interieur
+    url: https://www.imt-atlantique.fr/sites/default/files/ecole/ddrs/odd/ODD%2016/Reglement-interieur-adopte-version-11-avril-2024-VF.pdf
+    consulted_on: 2026-10-11
+
+  - id: imt-charte-informatique-2024
+    title: Charte informatique de l'Institut Mines-Télécom (annexe 1 du règlement intérieur, 2024)
+    institution: IMT Atlantique / Institut Mines-Télécom
+    kind: charte
+    url: https://www.imt.fr/wp-content/uploads/2024/12/Annexe-1-RI-_-Charte-informatique-FR_V1.0-IMT_com.pdf
+    consulted_on: 2026-10-11
