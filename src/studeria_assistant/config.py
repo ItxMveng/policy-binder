@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     data_dir: Path = ROOT_DIR / "data"
     # Fournisseur LLM : "groq" (offre gratuite), "mistral" (payant) ou "ollama" (local, sans clé).
     llm_provider: str = "groq"
-    llm_model: str = "llama-3.3-70b-versatile"
+    llm_model: str = "openai/gpt-oss-120b"
     llm_api_key: SecretStr | None = None
     top_k: int = 5
 
