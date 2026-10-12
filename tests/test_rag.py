@@ -145,3 +145,16 @@ def test_provider_retries_after_network_error() -> None:
     response = provider.complete("s", "u")
     assert response.text == "ok"
     assert response.rate_limit_wait_s >= 0
+
+
+def test_low_top_score_abstains_before_llm() -> None:
+    llm = FakeLLM("ne doit pas être appelé")
+    answer = Assistant(FakeRetriever(PASSAGES), llm, min_score=0.9).answer("Hors sujet ?")
+    assert answer.abstained and answer.abstained_before_llm
+    assert llm.calls == 0
+
+
+def test_top_score_above_threshold_calls_llm() -> None:
+    llm = FakeLLM("Il faut déclarer l'usage [1].")
+    answer = Assistant(FakeRetriever(PASSAGES), llm, min_score=0.5).answer("IA ?")
+    assert not answer.abstained and llm.calls == 1

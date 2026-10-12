@@ -1,0 +1,45 @@
+{
+  "budget_ms": 3000,
+  "regle": "Règle fixée avant la mesure : parmi les réglages dont la latence moyenne de recherche reste sous",
+  "reglages": [
+    {
+      "candidats": 20,
+      "max_chars": null,
+      "latence_ms": 10183,
+      "page@1": "9/12",
+      "page@5": "10/12"
+    },
+    {
+      "candidats": 10,
+      "max_chars": null,
+      "latence_ms": 5890,
+      "page@1": "9/12",
+      "page@5": "10/12"
+    },
+    {
+      "candidats": 20,
+      "max_chars": 600,
+      "latence_ms": 7040,
+      "page@1": "5/12",
+      "page@5": "10/12"
+    },
+    {
+      "candidats": 10,
+      "max_chars": 600,
+      "latence_ms": 3551,
+      "page@1": "6/12",
+      "page@5": "11/12"
+    },
+    {
+      "candidats": 10,
+      "max_chars": 400,
+      "latence_ms": 2230,
+      "page@1": "7/12",
+      "page@5": "10/12"
+    }
+  ],
+  "retenu": {
+    "candidats": 10,
+    "max_chars": 400
+  }
+}

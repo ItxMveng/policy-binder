@@ -189,3 +189,14 @@ def hit_at_k(question: EvalQuestion, hits: list[ScoredChunk], k: int, level: str
         return any(hit.chunk.source_id in expected_docs for hit in top)
     expected = {(s.source_id, s.page) for s in question.expected_sources}
     return any((hit.chunk.source_id, hit.chunk.page) in expected for hit in top)
+
+
+def choose_threshold(answerable_scores: list[float]) -> float:
+    """Règle fixée avant toute mesure : le plus haut seuil qui ne fait refuser aucune question
+    de calibration ayant une réponse, c'est-à-dire le plus petit de leurs meilleurs scores.
+
+    On privilégie l'absence de refus injustifiés ; le LLM reste le second garde-fou.
+    """
+    if not answerable_scores:
+        raise ValueError("au moins une question avec réponse est nécessaire pour calibrer")
+    return min(answerable_scores)

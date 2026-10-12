@@ -19,6 +19,15 @@ class Settings(BaseSettings):
     top_k: int = 5
     # "hybride" (dense + BM25, retenu après mesure, voir docs/evaluation.md) ou "dense".
     retrieval: str = "hybride"
+    # Reranking : désactivé par défaut. Sur CPU, le réglage rapide (choisi sur la calibration,
+    # eval/results/rerank-setting.json) n'apporte pas de gain mesuré ; voir docs/evaluation.md.
+    rerank: bool = False
+    rerank_candidates: int = 10
+    rerank_max_chars: int | None = 400
+    # Seuil d'abstention sur le score du reranker, appliqué seulement si rerank=True.
+    # Valeurs calibrées (eval/results/calibration*.json) : -2.362 (20 candidats, passages entiers),
+    # -6.582 (10 candidats, 400 caractères). None = pas de seuil.
+    min_score: float | None = None
 
     @property
     def llm_ready(self) -> bool:

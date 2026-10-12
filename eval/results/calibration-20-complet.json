@@ -1,0 +1,130 @@
+{
+  "reranker": "BAAI/bge-reranker-v2-m3-int8",
+  "candidats": 20,
+  "max_chars": null,
+  "regle": "plus haut seuil ne refusant aucune question de calibration avec réponse",
+  "seuil": -2.3624086380004883,
+  "hors_corpus_filtres_avant_llm": "12/12",
+  "scores": [
+    {
+      "id": "c01",
+      "answerable": true,
+      "score": 4.214958190917969
+    },
+    {
+      "id": "c02",
+      "answerable": true,
+      "score": 4.084056377410889
+    },
+    {
+      "id": "c03",
+      "answerable": true,
+      "score": -0.9358759522438049
+    },
+    {
+      "id": "c04",
+      "answerable": true,
+      "score": -0.3090691566467285
+    },
+    {
+      "id": "c05",
+      "answerable": true,
+      "score": 3.7019410133361816
+    },
+    {
+      "id": "c06",
+      "answerable": true,
+      "score": 3.754237413406372
+    },
+    {
+      "id": "c07",
+      "answerable": true,
+      "score": -0.9188782572746277
+    },
+    {
+      "id": "c08",
+      "answerable": true,
+      "score": 2.591099977493286
+    },
+    {
+      "id": "c09",
+      "answerable": true,
+      "score": -2.3624086380004883
+    },
+    {
+      "id": "c10",
+      "answerable": true,
+      "score": 0.8475977778434753
+    },
+    {
+      "id": "c11",
+      "answerable": true,
+      "score": 1.9276440143585205
+    },
+    {
+      "id": "c12",
+      "answerable": true,
+      "score": 4.243429183959961
+    },
+    {
+      "id": "n01",
+      "answerable": false,
+      "score": -6.709319114685059
+    },
+    {
+      "id": "n02",
+      "answerable": false,
+      "score": -4.397510051727295
+    },
+    {
+      "id": "n03",
+      "answerable": false,
+      "score": -6.314156532287598
+    },
+    {
+      "id": "n04",
+      "answerable": false,
+      "score": -3.6401610374450684
+    },
+    {
+      "id": "n05",
+      "answerable": false,
+      "score": -3.715492010116577
+    },
+    {
+      "id": "n06",
+      "answerable": false,
+      "score": -4.2671284675598145
+    },
+    {
+      "id": "n07",
+      "answerable": false,
+      "score": -2.9962220191955566
+    },
+    {
+      "id": "n08",
+      "answerable": false,
+      "score": -3.377498149871826
+    },
+    {
+      "id": "n09",
+      "answerable": false,
+      "score": -5.4748969078063965
+    },
+    {
+      "id": "n10",
+      "answerable": false,
+      "score": -3.022102117538452
+    },
+    {
+      "id": "n11",
+      "answerable": false,
+      "score": -8.146256446838379
+    },
+    {
+      "id": "n12",
+      "answerable": false,
+      "score": -5.443559169769287
+    }
+  ]
+}

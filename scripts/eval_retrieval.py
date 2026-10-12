@@ -18,6 +18,7 @@ from studeria_assistant.evaluation import hit_at_k, wilson
 from studeria_assistant.hybrid import HybridRetriever, Searcher
 from studeria_assistant.index import DenseIndex
 from studeria_assistant.ingest import read_chunks
+from studeria_assistant.rerank import FastEmbedReranker, RerankingRetriever
 
 KS = (1, 3, 5, 10)
 
@@ -29,10 +30,20 @@ def main() -> None:
     client = QdrantClient(path=str(settings.qdrant_path))
     dense = DenseIndex(client, FastEmbedEmbedder())
     lexical = BM25Index(read_chunks(settings.data_dir / "processed" / "chunks.jsonl"))
+    reranker = FastEmbedReranker()
     searchers: dict[str, Searcher] = {
         "dense": dense,
         "bm25": lexical,
         "hybride": HybridRetriever(dense, lexical),
+        # Réglage complet (20 candidats, passages entiers) : plafond de qualité, trop lent sur CPU.
+        "hybride+rerank complet": RerankingRetriever(HybridRetriever(dense, lexical), reranker),
+        # Réglage retenu sur la calibration : 10 candidats, 400 premiers caractères.
+        "hybride+rerank retenu": RerankingRetriever(
+            HybridRetriever(dense, lexical),
+            reranker,
+            settings.rerank_candidates,
+            settings.rerank_max_chars,
+        ),
     }
 
     report: dict[str, dict[str, object]] = {}
@@ -51,7 +62,7 @@ def main() -> None:
             q.id for q, r in zip(questions, rankings, strict=True) if not hit_at_k(q, r, 5)
         ]
         report[name] = entry
-        print(f"{name:8} page@1 page@3 page@5 page@10 :", end=" ")
+        print(f"{name:23} page@1 page@3 page@5 page@10 :", end=" ")
         print(" ".join(f"{entry[f'page@{k}']['value'] * 100:5.1f}%" for k in KS))  # type: ignore[index]
     client.close()
     out = root / "eval" / "results" / "retrieval-comparison.json"

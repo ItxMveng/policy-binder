@@ -23,6 +23,7 @@ from studeria_assistant.index import DenseIndex
 from studeria_assistant.ingest import read_chunks
 from studeria_assistant.llm import make_provider
 from studeria_assistant.rag import Assistant, Retriever
+from studeria_assistant.rerank import DEFAULT_RERANKER, FastEmbedReranker, RerankingRetriever
 
 JUDGE_MODEL = "qwen/qwen3.8-27b"
 # Tarif public Groq de openai/gpt-oss-120b, relevé le 2026-10-12 sur
@@ -37,9 +38,17 @@ def main() -> None:
     parser.add_argument("name")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--retrieval", choices=["dense", "hybride"], default="dense")
+    parser.add_argument("--rerank", action="store_true", help="reranker sur 20 candidats")
+    parser.add_argument("--min-score", type=float, default=None, help="seuil d'abstention")
+    parser.add_argument("--rerank-candidates", type=int, default=None)
+    parser.add_argument("--rerank-max-chars", type=int, default=None, help="0 = passage entier")
     args = parser.parse_args()
 
     settings = get_settings()
+    if args.rerank_candidates is not None:
+        settings.rerank_candidates = args.rerank_candidates
+    if args.rerank_max_chars is not None:
+        settings.rerank_max_chars = args.rerank_max_chars or None
     key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
     questions = load_questions(settings.data_dir.parent / "eval" / "questions.jsonl")[: args.limit]
     client = QdrantClient(path=str(settings.qdrant_path))
@@ -47,10 +56,15 @@ def main() -> None:
     if args.retrieval == "hybride":
         chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")
         retriever = HybridRetriever(retriever, BM25Index(chunks))
+    if args.rerank:
+        retriever = RerankingRetriever(
+            retriever, FastEmbedReranker(), settings.rerank_candidates, settings.rerank_max_chars
+        )
     assistant = Assistant(
         retriever,
         make_provider(settings.llm_provider, settings.llm_model, key),
         k=settings.top_k,
+        min_score=args.min_score,
     )
     judge_llm = make_provider(settings.llm_provider, JUDGE_MODEL, key)
 
@@ -88,6 +102,13 @@ def main() -> None:
         "questions": len(results),
         "configuration": {
             "retrieval": args.retrieval,
+            "reranker": (
+                f"{DEFAULT_RERANKER} ({settings.rerank_candidates} candidats, "
+                f"{settings.rerank_max_chars} car.)"
+                if args.rerank
+                else None
+            ),
+            "seuil_abstention": args.min_score,
             "embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
             "top_k": settings.top_k,
             "llm": f"{settings.llm_provider}:{settings.llm_model}",

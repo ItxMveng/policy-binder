@@ -133,3 +133,14 @@ def test_hit_at_k_page_and_document_levels() -> None:
     assert hit_at_k(QUESTION, PASSAGES, k=1)
     assert not hit_at_k(QUESTION, PASSAGES[1:], k=5)
     assert hit_at_k(QUESTION, PASSAGES[::-1], k=2, level="document")
+
+
+def test_choose_threshold_keeps_every_answerable_calibration_question() -> None:
+    from studeria_assistant.evaluation import choose_threshold
+
+    answerable = [2.1, 0.4, 5.0]
+    threshold = choose_threshold(answerable)
+    assert threshold == 0.4
+    assert all(score >= threshold for score in answerable)
+    with pytest.raises(ValueError):
+        choose_threshold([])

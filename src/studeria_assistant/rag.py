@@ -43,6 +43,8 @@ class Answer(BaseModel):
     latency_ms: float
     input_tokens: int = 0
     output_tokens: int = 0
+    # Abstention décidée avant le LLM (aucun passage, ou meilleur score sous le seuil).
+    abstained_before_llm: bool = False
 
 
 def build_user_prompt(question: str, passages: list[ScoredChunk]) -> str:
@@ -77,22 +79,35 @@ def is_abstention(text: str) -> bool:
 
 
 class Assistant:
-    def __init__(self, retriever: Retriever, llm: LLMProvider, k: int = 5) -> None:
+    """`min_score` : seuil d'abstention sur le score du meilleur passage (score du reranker).
+
+    Sous le seuil, aucun passage n'est jugé assez pertinent : on s'abstient sans appeler le LLM.
+    C'est un garde-fou indépendant du modèle, et une économie sur les questions hors sujet.
+    """
+
+    def __init__(
+        self, retriever: Retriever, llm: LLMProvider, k: int = 5, min_score: float | None = None
+    ) -> None:
         self.retriever = retriever
         self.llm = llm
         self.k = k
+        self.min_score = min_score
 
     def answer(self, question: str) -> Answer:
         start = time.perf_counter()
         passages = self.retriever.search(question, self.k)
-        if not passages:  # rien à citer : on s'abstient sans appeler le LLM
+        below_threshold = (
+            self.min_score is not None and bool(passages) and passages[0].score < self.min_score
+        )
+        if not passages or below_threshold:
             return Answer(
                 question=question,
                 text=ABSTENTION,
                 abstained=True,
                 citations=[],
-                retrieved=[],
+                retrieved=passages,
                 latency_ms=(time.perf_counter() - start) * 1000,
+                abstained_before_llm=True,
             )
         response = self.llm.complete(SYSTEM_PROMPT, build_user_prompt(question, passages))
         abstained = is_abstention(response.text)

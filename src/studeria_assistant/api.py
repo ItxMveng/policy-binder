@@ -38,8 +38,16 @@ def _build_assistant() -> Assistant:
     if settings.retrieval == "hybride":
         chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")
         retriever = HybridRetriever(retriever, BM25Index(chunks))
+    min_score = None
+    if settings.rerank:
+        from studeria_assistant.rerank import FastEmbedReranker, RerankingRetriever
+
+        retriever = RerankingRetriever(
+            retriever, FastEmbedReranker(), settings.rerank_candidates, settings.rerank_max_chars
+        )
+        min_score = settings.min_score
     llm = make_provider(settings.llm_provider, settings.llm_model, key)
-    return Assistant(retriever, llm, k=settings.top_k)
+    return Assistant(retriever, llm, k=settings.top_k, min_score=min_score)
 
 
 def get_assistant() -> Assistant:
