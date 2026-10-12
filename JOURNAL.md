@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-13 — P1-08 Reranking et seuil d'abstention
+- Fait : reranker cross-encoder local (bge-reranker-v2-m3) sur 20 candidats de la recherche hybride, et seuil d'abstention qui évite d'appeler le LLM quand aucun passage n'est pertinent ; seuil et réglage calibrés sur 24 questions distinctes du jeu de test ; configuration par défaut de l'API.
+- Chiffre mesuré : hybride + reranker + seuil (eval/results/hybride-rerank-complet.json) : exactitude 70 % (IC 55–82 %) contre 42,5 % pour la base naïve, refus injustifiés 5 % contre 37,5 %, 0 réponse incorrecte, abstention hors corpus 20/20 dont 15 sans appel au LLM ; latence p50 10,5 s sur CPU de portable
+- Décision technique : seuil fixé sur un jeu de calibration distinct par une règle écrite avant la mesure, plutôt que réglé sur le jeu de test ; le prix du gain de qualité est une latence de 10 s sur CPU, à traiter au déploiement.
+- Visuel disponible : aucun
+
 ## 2026-10-12 — P1-07 Recherche hybride dense + BM25
 - Fait : recherche hybride : BM25 écrit à la main (tokenisation française, environ 1,4 ms par requête) fusionné avec la recherche dense par Reciprocal Rank Fusion ; comparaison de la recherche seule (dense / BM25 / hybride) puis évaluation complète sur les 60 questions validées ; l'API utilise l'hybride par défaut.
 - Chiffre mesuré : hybride vs base naïve (eval/results/hybride-rrf.json) : page attendue récupérée 80 % vs 62,5 %, refus injustifiés 22,5 % vs 37,5 %, correct ou partiel 70 % vs 57,5 %, abstention hors corpus 20/20 inchangée, réponses incorrectes 3 vs 2

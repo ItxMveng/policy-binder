@@ -12,7 +12,7 @@
 
 ## Amélioration de la récupération et de l'abstention
 - [x] P1-07 Recherche hybride dense + BM25 — fusion par rangs (RRF), mesure comparée à la base naïve (fait le 2026-10-12)
-- [ ] P1-08 Reranking et seuil d'abstention — reranker, seuil calibré sur un sous-ensemble distinct du jeu de test, mesure des refus injustifiés et de l'abstention correcte
+- [x] P1-08 Reranking et seuil d'abstention — reranker, seuil calibré sur un sous-ensemble distinct du jeu de test, mesure des refus injustifiés et de l'abstention correcte (fait le 2026-10-13)
 - [ ] P1-09 Évaluation en CI — 20 questions en CI bloquantes sous le seuil, évaluation complète sur tag
 
 ## Déploiement et observabilité
