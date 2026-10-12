@@ -8,6 +8,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from studeria_assistant.evalset import EvalQuestion
+from studeria_assistant.index import ScoredChunk
 from studeria_assistant.llm import LLMProvider
 from studeria_assistant.rag import Answer
 
@@ -178,3 +179,13 @@ def summarize(
         * (mean_in * price_in_per_m + mean_out * price_out_per_m)
         / 1e6,
     )
+
+
+def hit_at_k(question: EvalQuestion, hits: list[ScoredChunk], k: int, level: str = "page") -> bool:
+    """La source attendue figure-t-elle parmi les k premiers passages ? (niveau page ou document)"""
+    top = hits[:k]
+    if level == "document":
+        expected_docs = {s.source_id for s in question.expected_sources}
+        return any(hit.chunk.source_id in expected_docs for hit in top)
+    expected = {(s.source_id, s.page) for s in question.expected_sources}
+    return any((hit.chunk.source_id, hit.chunk.page) in expected for hit in top)

@@ -13,13 +13,16 @@ from datetime import UTC, datetime
 
 from qdrant_client import QdrantClient
 
+from studeria_assistant.bm25 import BM25Index
 from studeria_assistant.config import get_settings
 from studeria_assistant.embeddings import FastEmbedEmbedder
 from studeria_assistant.evalset import load_questions
 from studeria_assistant.evaluation import QuestionResult, score, summarize
+from studeria_assistant.hybrid import HybridRetriever
 from studeria_assistant.index import DenseIndex
+from studeria_assistant.ingest import read_chunks
 from studeria_assistant.llm import make_provider
-from studeria_assistant.rag import Assistant
+from studeria_assistant.rag import Assistant, Retriever
 
 JUDGE_MODEL = "qwen/qwen3.8-27b"
 # Tarif public Groq de openai/gpt-oss-120b, relevé le 2026-10-12 sur
@@ -33,14 +36,19 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("name")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--retrieval", choices=["dense", "hybride"], default="dense")
     args = parser.parse_args()
 
     settings = get_settings()
     key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
     questions = load_questions(settings.data_dir.parent / "eval" / "questions.jsonl")[: args.limit]
     client = QdrantClient(path=str(settings.qdrant_path))
+    retriever: Retriever = DenseIndex(client, FastEmbedEmbedder())
+    if args.retrieval == "hybride":
+        chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")
+        retriever = HybridRetriever(retriever, BM25Index(chunks))
     assistant = Assistant(
-        DenseIndex(client, FastEmbedEmbedder()),
+        retriever,
         make_provider(settings.llm_provider, settings.llm_model, key),
         k=settings.top_k,
     )
@@ -79,7 +87,7 @@ def main() -> None:
         "date": datetime.now(UTC).isoformat(timespec="seconds"),
         "questions": len(results),
         "configuration": {
-            "retrieval": "dense",
+            "retrieval": args.retrieval,
             "embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
             "top_k": settings.top_k,
             "llm": f"{settings.llm_provider}:{settings.llm_model}",

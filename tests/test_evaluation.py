@@ -124,3 +124,12 @@ def test_summarize_rates_and_cost() -> None:
     assert summary.citations_correctes.total == 1
     # 1 000 × (2 000 × 0,15 + 500 × 0,60) / 1e6 = 0,60 $
     assert summary.cout_1000_questions_usd == pytest.approx(0.60)
+
+
+def test_hit_at_k_page_and_document_levels() -> None:
+    from studeria_assistant.evaluation import hit_at_k
+
+    # PASSAGES : [ia p.11, examens p.3] ; QUESTION attend (ia, 11)
+    assert hit_at_k(QUESTION, PASSAGES, k=1)
+    assert not hit_at_k(QUESTION, PASSAGES[1:], k=5)
+    assert hit_at_k(QUESTION, PASSAGES[::-1], k=2, level="document")
