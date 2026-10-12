@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     llm_model: str = "openai/gpt-oss-120b"
     llm_api_key: SecretStr | None = None
     top_k: int = 5
+    # "hybride" (dense + BM25, retenu après mesure, voir docs/evaluation.md) ou "dense".
+    retrieval: str = "hybride"
 
     @property
     def llm_ready(self) -> bool:

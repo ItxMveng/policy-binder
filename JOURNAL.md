@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-12 — P1-07 Recherche hybride dense + BM25
+- Fait : recherche hybride : BM25 écrit à la main (tokenisation française, environ 1,4 ms par requête) fusionné avec la recherche dense par Reciprocal Rank Fusion ; comparaison de la recherche seule (dense / BM25 / hybride) puis évaluation complète sur les 60 questions validées ; l'API utilise l'hybride par défaut.
+- Chiffre mesuré : hybride vs base naïve (eval/results/hybride-rrf.json) : page attendue récupérée 80 % vs 62,5 %, refus injustifiés 22,5 % vs 37,5 %, correct ou partiel 70 % vs 57,5 %, abstention hors corpus 20/20 inchangée, réponses incorrectes 3 vs 2
+- Décision technique : fusion par rangs (RRF) sans aucun réglage sur le jeu de test, plutôt qu'une moyenne pondérée de scores à calibrer : on évite de surajuster, au prix de ne pas prendre BM25 seul, aussi bon ici.
+- Visuel disponible : aucun
+
 ## 2026-10-12 — Validation du jeu d'évaluation
 - Fait : les 60 questions du jeu d'évaluation ont été relues par Francis sur les PDF (page de validation locale avec liens vers la bonne page) ; aucune question modifiée.
 - Chiffre mesuré : aucun

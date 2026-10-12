@@ -18,20 +18,34 @@
 
 ## Résultats
 
-| Métrique | Base naïve (dense seule, k = 5) — 12/10/2026 |
-|---|---|
-| Exactitude | **42,5 %** (17/40) — IC 95 % : 29–58 % |
-| Correct ou partiel | 57,5 % (23/40) — IC 95 % : 42–71 % |
-| Citations correctes (réponses données) | 88,0 % (22/25) — IC 95 % : 70–96 % |
-| Contexte : page attendue récupérée | 62,5 % (25/40) — IC 95 % : 47–76 % |
-| Contexte : document attendu récupéré | 97,5 % (39/40) — IC 95 % : 87–100 % |
-| **Refus injustifiés** | **37,5 %** (15/40) — IC 95 % : 24–53 % |
-| **Abstention correcte (hors corpus)** | **100 %** (20/20) — IC 95 % : 84–100 % |
-| Latence p50 / p95 | 1,0 s / 2,0 s |
-| Tokens moyens (entrée / sortie) | 1 313 / 189 |
-| Coût pour 1 000 questions (tarif public) | 0,31 $ |
+| Métrique | Base naïve : dense seule (12/10) | Hybride dense + BM25, RRF (12/10) |
+|---|---|---|
+| Exactitude | 42,5 % (17/40) — IC 29–58 % | **47,5 %** (19/40) — IC 33–63 % |
+| Correct ou partiel | 57,5 % (23/40) — IC 42–71 % | **70,0 %** (28/40) — IC 55–82 % |
+| Citations correctes (réponses données) | 88,0 % (22/25) — IC 70–96 % | 90,3 % (28/31) — IC 75–97 % |
+| Contexte : page attendue récupérée | 62,5 % (25/40) — IC 47–76 % | **80,0 %** (32/40) — IC 65–90 % |
+| Contexte : document attendu récupéré | 97,5 % (39/40) — IC 87–100 % | 100 % (40/40) — IC 91–100 % |
+| **Refus injustifiés** | 37,5 % (15/40) — IC 24–53 % | **22,5 %** (9/40) — IC 12–38 % |
+| **Abstention correcte (hors corpus)** | 100 % (20/20) — IC 84–100 % | **100 %** (20/20) — IC 84–100 % |
+| Réponses incorrectes (sur 40) | 2 | 3 |
+| Latence p50 / p95 | 1,0 s / 2,0 s | 1,0 s / 1,9 s |
+| Tokens moyens (entrée / sortie) | 1 313 / 189 | 1 305 / 188 |
+| Coût pour 1 000 questions (tarif public) | 0,31 $ | 0,31 $ |
 
-Source : `eval/results/baseline-dense.json`.
+IC = intervalle de confiance à 95 % (Wilson).
+
+Sources : `eval/results/baseline-dense.json`, `eval/results/hybride-rrf.json`.
+
+### Recherche seule (sans LLM)
+`scripts/eval_retrieval.py` → `eval/results/retrieval-comparison.json` : part des 40 questions dont la page attendue figure parmi les k premiers passages.
+
+| Recherche | k = 1 | k = 3 | k = 5 | k = 10 | Temps moyen par requête |
+|---|---|---|---|---|---|
+| Dense | 37,5 % | 57,5 % | 62,5 % | 77,5 % | 14 ms |
+| BM25 | 52,5 % | 77,5 % | 80,0 % | 92,5 % | 1,4 ms |
+| Hybride (RRF) | 45,0 % | 70,0 % | 80,0 % | 92,5 % | 16 ms |
+
+BM25 seul égale l'hybride à k = 5 et le dépasse à k = 1 et 3. L'écart n'est pas significatif sur 40 questions. L'hybride est retenu, comme prévu avant la mesure, parce qu'il reste robuste aux reformulations sans mots communs avec le texte. Les poids de la fusion n'ont **pas** été réglés sur ce jeu de test, pour ne pas surajuster.
 
 ## Analyse des erreurs de la base naïve
 Sur les 40 questions avec réponse, 23 ne sont pas jugées « correctes » :
@@ -49,6 +63,17 @@ Sur les 40 questions avec réponse, 23 ne sont pas jugées « correctes » :
 **Conclusion** : la base naïve est prudente (aucune réponse sur les questions hors corpus) mais refuse trop souvent. Le goulot d'étranglement est la **récupération de la bonne page**, pas la génération. D'où les prochaines étapes, mesurées sur le même jeu :
 1. Recherche hybride dense + BM25 (P1-07), pour retrouver les détails chiffrés et les termes exacts.
 2. Reranking et seuil d'abstention calibré (P1-08), pour réduire les refus injustifiés sans perdre l'abstention correcte.
+
+## Effet de la recherche hybride (P1-07)
+- **Ce qui s'améliore** : la page attendue est récupérée pour 7 questions de plus (62,5 % → 80 %). 6 refus injustifiés disparaissent (15 → 9). La part de réponses correctes ou partielles passe de 57,5 % à 70 %. L'abstention sur les questions hors corpus reste parfaite (20/20).
+- **Ce qui ne bouge pas** : la latence et le coût, car le BM25 en mémoire coûte environ 1 ms. L'exactitude stricte progresse peu (42,5 % → 47,5 %) et les intervalles se recouvrent : seule la baisse des refus est nette.
+- **Le revers** : en répondant plus souvent, l'assistant se trompe un peu plus (2 → 3 réponses incorrectes).
+  - q19 affirme qu'on peut stocker des données de l'UBO sur un ordinateur personnel, alors que la charte l'interdit (p. 9). La bonne page était dans le contexte : c'est une erreur de génération.
+  - q38 répète l'erreur de la base naïve sur la redirection de messagerie.
+  - q22 donne « 15 jours avant les jurys ». Le guide prévoit en fait deux délais : 3 semaines en règle générale, 15 jours pour un cas de force majeure. La réponse de référence ne cite que le premier ; elle mérite d'être complétée lors d'une prochaine révision du jeu.
+- **Refus restants (9)** : 7 viennent encore d'une page non récupérée, 2 (q08, q29) d'une abstention du modèle alors que la page était fournie.
+
+**Prochaine étape (P1-08)** : un reranker qui classe plus finement les 20 candidats de la recherche hybride, et un seuil d'abstention calibré sur un sous-ensemble distinct du jeu de test. Objectif : réduire les refus sans faire monter les réponses incorrectes. Pour q19, une consigne qui demande de citer la règle mot pour mot avant de conclure est une piste à mesurer.
 
 ## Limites
 - 60 questions : les intervalles sont larges, seuls les écarts importants seront interprétables.

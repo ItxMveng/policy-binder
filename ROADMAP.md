@@ -11,7 +11,7 @@
 - [x] P1-06 Mesure des erreurs de la base naïve — script d'évaluation (exactitude par juge LLM, citations, précision du contexte, abstention correcte, refus injustifiés, latence p50/p95, coût / 1 000 questions), résultats exploratoires dans docs/evaluation.md (fait le 2026-10-12)
 
 ## Amélioration de la récupération et de l'abstention
-- [ ] P1-07 Recherche hybride dense + BM25 — fusion par rangs (RRF), mesure comparée à la base naïve
+- [x] P1-07 Recherche hybride dense + BM25 — fusion par rangs (RRF), mesure comparée à la base naïve (fait le 2026-10-12)
 - [ ] P1-08 Reranking et seuil d'abstention — reranker, seuil calibré sur un sous-ensemble distinct du jeu de test, mesure des refus injustifiés et de l'abstention correcte
 - [ ] P1-09 Évaluation en CI — 20 questions en CI bloquantes sous le seuil, évaluation complète sur tag
 

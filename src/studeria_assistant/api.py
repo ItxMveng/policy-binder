@@ -22,15 +22,24 @@ def _build_assistant() -> Assistant:
     """Construit l'assistant une seule fois (modèle d'embeddings et index chargés au 1er appel)."""
     from qdrant_client import QdrantClient
 
+    from studeria_assistant.bm25 import BM25Index
     from studeria_assistant.embeddings import FastEmbedEmbedder
+    from studeria_assistant.hybrid import HybridRetriever
     from studeria_assistant.index import DenseIndex
+    from studeria_assistant.ingest import read_chunks
     from studeria_assistant.llm import make_provider
+    from studeria_assistant.rag import Retriever
 
     settings = get_settings()
     key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
-    index = DenseIndex(QdrantClient(path=str(settings.qdrant_path)), FastEmbedEmbedder())
+    retriever: Retriever = DenseIndex(
+        QdrantClient(path=str(settings.qdrant_path)), FastEmbedEmbedder()
+    )
+    if settings.retrieval == "hybride":
+        chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")
+        retriever = HybridRetriever(retriever, BM25Index(chunks))
     llm = make_provider(settings.llm_provider, settings.llm_model, key)
-    return Assistant(index, llm, k=settings.top_k)
+    return Assistant(retriever, llm, k=settings.top_k)
 
 
 def get_assistant() -> Assistant:
