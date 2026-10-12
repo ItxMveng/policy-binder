@@ -12,7 +12,7 @@ Le coût : du temps perdu à chercher, des sollicitations répétées des servic
 ## Périmètre
 - Ingestion PDF/Markdown → extraction du texte page par page → découpage en passages avec métadonnées (document, page) → embeddings → index Qdrant (local en développement, Qdrant Cloud en production).
 - Recherche dense (base naïve), puis recherche hybride (dense + BM25) et reranking.
-- Réponse générée par un LLM (API Mistral derrière l'interface `LLMProvider`) avec citations des passages utilisés.
+- Réponse générée par un LLM derrière l'interface `LLMProvider` avec citations des passages utilisés. Fournisseur par défaut : Groq (offre gratuite, modèles open-weight) ; l'API Mistral et Ollama (local) passent par la même classe. Décision du 12/10/2026 : l'offre gratuite de Mistral ne donne plus accès à l'API.
 - Abstention explicite quand l'information n'est pas dans les documents.
 - API FastAPI, interface de chat (React + Vite + TypeScript sur Vercel), traces Langfuse.
 - Démo publique protégée (limite de requêtes par IP + quota quotidien).
@@ -37,7 +37,7 @@ flowchart LR
       RET --> RR["Reranking"]
       RR --> AB{"Passages<br/>pertinents ?"}
       AB -->|non| NO["« Je ne trouve pas<br/>cette information »"]
-      AB -->|oui| LLM["LLMProvider<br/>(Mistral)"]
+      AB -->|oui| LLM["LLMProvider<br/>(Groq / Mistral / Ollama)"]
       LLM --> ANS["Réponse + citations"]
     end
     QD --> RET

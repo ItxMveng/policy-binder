@@ -37,6 +37,7 @@ def test_ask_rejects_empty_question() -> None:
 
 
 def test_ask_without_key_returns_503(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("MISTRAL_API_KEY", raising=False)
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
+    monkeypatch.delenv("LLM_PROVIDER", raising=False)
     monkeypatch.chdir("/")  # aucun fichier .env lu
     assert client.post("/ask", json={"question": "Bonjour ?"}).status_code == 503

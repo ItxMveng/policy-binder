@@ -1,10 +1,11 @@
 import json
 
 import httpx
+import pytest
 
 from studeria_assistant.index import ScoredChunk
 from studeria_assistant.ingest import Chunk
-from studeria_assistant.llm import LLMResponse, MistralProvider
+from studeria_assistant.llm import ChatCompletionsProvider, LLMResponse, make_provider
 from studeria_assistant.rag import ABSTENTION, Assistant, build_user_prompt, extract_citations
 
 PASSAGES = [
@@ -83,21 +84,48 @@ def test_citations_are_deduplicated_in_order() -> None:
     assert [c.number for c in citations] == [2, 1]
 
 
-def test_mistral_provider_parses_response_and_usage() -> None:
+def _chat_response(text: str) -> httpx.Response:
+    return httpx.Response(
+        200,
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "choices": [{"message": {"content": text}}],
+            "usage": {"prompt_tokens": 321, "completion_tokens": 12},
+        },
+    )
+
+
+def test_provider_parses_response_and_usage() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         body = json.loads(request.content)
+        assert request.url == "https://api.groq.com/openai/v1/chat/completions"
         assert body["temperature"] == 0
         assert request.headers["Authorization"] == "Bearer test-key"
-        return httpx.Response(
-            200,
-            json={
-                "model": "mistral-small-latest",
-                "choices": [{"message": {"content": "Réponse [1]."}}],
-                "usage": {"prompt_tokens": 321, "completion_tokens": 12},
-            },
-        )
+        return _chat_response("Réponse [1].")
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
-    response = MistralProvider("test-key", client=client).complete("système", "question")
+    provider = make_provider("groq", "llama-3.3-70b-versatile", "test-key", client)
+    response = provider.complete("système", "question")
     assert response.text == "Réponse [1]."
     assert (response.input_tokens, response.output_tokens) == (321, 12)
+
+
+def test_provider_retries_after_rate_limit() -> None:
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        if len(calls) == 1:
+            return httpx.Response(429, headers={"retry-after": "0"})
+        return _chat_response("ok")
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    provider = ChatCompletionsProvider("https://example.org/v1", "m", client=client)
+    assert provider.complete("s", "u").text == "ok"
+    assert len(calls) == 2
+
+
+def test_ollama_needs_no_key_and_unknown_provider_fails() -> None:
+    assert make_provider("ollama", "llama3.1:8b").base_url == "http://localhost:11434/v1"
+    with pytest.raises(ValueError):
+        make_provider("inconnu", "m")

@@ -12,9 +12,15 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     data_dir: Path = ROOT_DIR / "data"
-    mistral_api_key: SecretStr | None = None
-    mistral_model: str = "mistral-small-latest"
+    # Fournisseur LLM : "groq" (offre gratuite), "mistral" (payant) ou "ollama" (local, sans clé).
+    llm_provider: str = "groq"
+    llm_model: str = "llama-3.3-70b-versatile"
+    llm_api_key: SecretStr | None = None
     top_k: int = 5
+
+    @property
+    def llm_ready(self) -> bool:
+        return self.llm_provider == "ollama" or self.llm_api_key is not None
 
     @property
     def qdrant_path(self) -> Path:

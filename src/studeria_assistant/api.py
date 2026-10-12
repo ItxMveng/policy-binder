@@ -24,18 +24,18 @@ def _build_assistant() -> Assistant:
 
     from studeria_assistant.embeddings import FastEmbedEmbedder
     from studeria_assistant.index import DenseIndex
-    from studeria_assistant.llm import MistralProvider
+    from studeria_assistant.llm import make_provider
 
     settings = get_settings()
-    assert settings.mistral_api_key is not None
+    key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
     index = DenseIndex(QdrantClient(path=str(settings.qdrant_path)), FastEmbedEmbedder())
-    llm = MistralProvider(settings.mistral_api_key.get_secret_value(), settings.mistral_model)
+    llm = make_provider(settings.llm_provider, settings.llm_model, key)
     return Assistant(index, llm, k=settings.top_k)
 
 
 def get_assistant() -> Assistant:
-    if get_settings().mistral_api_key is None:
-        raise HTTPException(status_code=503, detail="MISTRAL_API_KEY non configurée.")
+    if not get_settings().llm_ready:
+        raise HTTPException(status_code=503, detail="LLM_API_KEY non configurée.")
     return _build_assistant()
 
 
