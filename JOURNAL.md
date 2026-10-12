@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-12 — Validation du jeu d'évaluation
+- Fait : les 60 questions du jeu d'évaluation ont été relues par Francis sur les PDF (page de validation locale avec liens vers la bonne page) ; aucune question modifiée.
+- Chiffre mesuré : aucun
+- Décision technique : garder les questions hors corpus dont la réponse existe ailleurs (CVEC, CROUS…) : c'est précisément le cas où l'assistant doit s'abstenir au lieu de répondre de mémoire.
+- Visuel disponible : aucun
+
 ## 2026-10-12 — P1-06 Mesure des erreurs de la base naïve
 - Fait : premier appel réel au modèle (Groq, offre gratuite, gpt-oss-120b : l'offre gratuite de Mistral n'ouvre plus l'API) et évaluation de la base naïve sur les 60 questions avec juge LLM d'une autre famille (Qwen), intervalles de Wilson et analyse des erreurs dans docs/evaluation.md. Résultats exploratoires, jeu pas encore validé par Francis.
 - Chiffre mesuré : base naïve (eval/results/baseline-dense.json) : exactitude 42,5 % (17/40, IC 95 % 29–58 %), refus injustifiés 37,5 % (15/40), abstention correcte 20/20 sur les questions hors corpus, latence p50 1,0 s / p95 2,0 s, 0,31 $ pour 1 000 questions au tarif public

@@ -1,6 +1,8 @@
 # Jeu d'évaluation — à valider par Francis
 
-Statut : **rédigé par Claude Code le 11/10/2026, pas encore validé.** Tant que cette ligne n'est pas remplacée par « validé par Francis le … », les résultats d'évaluation restent provisoires.
+Statut : **validé par Francis le 12/10/2026**, sans modification des questions.
+- q11 : Francis a signalé une lecture possible à 1 h 10 (tiers de 3 h 30). Le texte prévoit une exception au-delà de 3 heures (« aucune sortie n'est autorisée avant la première heure ») : la référence « 1 heure » est conservée, la formulation ambiguë du document est notée.
+- h01–h07 : les réponses existent hors des documents (CVEC, CROUS, gratification, TOEIC…), mais aucun des 9 documents ne les donne (vérifié par recherche dans le texte extrait) : elles restent des questions hors corpus.
 
 ## Ce qu'il faut vérifier (environ 45 minutes)
 Pour chacune des 40 questions `q01`–`q40` de `questions.jsonl` :
