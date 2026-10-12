@@ -1,0 +1,68 @@
+{
+  "run": "baseline-dense",
+  "date": "2026-10-12T08:40:22+00:00",
+  "questions": 60,
+  "configuration": {
+    "retrieval": "dense",
+    "embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "top_k": 5,
+    "llm": "groq:openai/gpt-oss-120b",
+    "juge": "groq:qwen/qwen3.8-27b"
+  },
+  "resultats": {
+    "exactitude": {
+      "count": 17,
+      "total": 40,
+      "value": 0.425,
+      "low": 0.28509168524815875,
+      "high": 0.5780519956394001
+    },
+    "exactitude_correct_ou_partiel": {
+      "count": 23,
+      "total": 40,
+      "value": 0.575,
+      "low": 0.42194800436059987,
+      "high": 0.7149083147518411
+    },
+    "citations_correctes": {
+      "count": 22,
+      "total": 25,
+      "value": 0.88,
+      "low": 0.7004380781662651,
+      "high": 0.9583325864293191
+    },
+    "contexte_page_attendue": {
+      "count": 25,
+      "total": 40,
+      "value": 0.625,
+      "low": 0.47032160054531913,
+      "high": 0.7577722646420829
+    },
+    "contexte_document_attendu": {
+      "count": 39,
+      "total": 40,
+      "value": 0.975,
+      "low": 0.8711834051199223,
+      "high": 0.9955732825922052
+    },
+    "refus_injustifies": {
+      "count": 15,
+      "total": 40,
+      "value": 0.375,
+      "low": 0.2422277353579172,
+      "high": 0.529678399454681
+    },
+    "abstention_correcte": {
+      "count": 20,
+      "total": 20,
+      "value": 1.0,
+      "low": 0.8388698745050667,
+      "high": 1.0
+    },
+    "latence_p50_ms": 1003.8667499993608,
+    "latence_p95_ms": 2043.2124249991825,
+    "tokens_entree_moyen": 1313.3,
+    "tokens_sortie_moyen": 188.5,
+    "cout_1000_questions_usd": 0.31009499999999995
+  }
+}

@@ -8,7 +8,7 @@
 
 ## Jeu d'évaluation et mesure
 - [x] P1-05 Jeu d'évaluation versionné — eval/questions.jsonl (40 avec réponse + source attendue, 20 hors corpus), schéma Pydantic, test de cohérence avec sources.yaml (fait le 2026-10-11)
-- [ ] P1-06 Mesure des erreurs de la base naïve — script d'évaluation (exactitude par juge LLM, citations, précision du contexte, abstention correcte, refus injustifiés, latence p50/p95, coût / 1 000 questions), résultats exploratoires dans docs/evaluation.md
+- [x] P1-06 Mesure des erreurs de la base naïve — script d'évaluation (exactitude par juge LLM, citations, précision du contexte, abstention correcte, refus injustifiés, latence p50/p95, coût / 1 000 questions), résultats exploratoires dans docs/evaluation.md (fait le 2026-10-12)
 
 ## Amélioration de la récupération et de l'abstention
 - [ ] P1-07 Recherche hybride dense + BM25 — fusion par rangs (RRF), mesure comparée à la base naïve

@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-12 — P1-06 Mesure des erreurs de la base naïve
+- Fait : premier appel réel au modèle (Groq, offre gratuite, gpt-oss-120b : l'offre gratuite de Mistral n'ouvre plus l'API) et évaluation de la base naïve sur les 60 questions avec juge LLM d'une autre famille (Qwen), intervalles de Wilson et analyse des erreurs dans docs/evaluation.md. Résultats exploratoires, jeu pas encore validé par Francis.
+- Chiffre mesuré : base naïve (eval/results/baseline-dense.json) : exactitude 42,5 % (17/40, IC 95 % 29–58 %), refus injustifiés 37,5 % (15/40), abstention correcte 20/20 sur les questions hors corpus, latence p50 1,0 s / p95 2,0 s, 0,31 $ pour 1 000 questions au tarif public
+- Décision technique : mesurer le contexte au niveau document et page : le bon document est trouvé dans 97,5 % des cas mais la bonne page dans 62,5 %, donc l'effort va sur la recherche (hybride + reranking) plutôt que sur le prompt.
+- Visuel disponible : aucun
+
 ## 2026-10-11 — P1-05 Jeu d'évaluation versionné
 - Fait : jeu d'évaluation versionné de 60 questions (40 avec réponse de référence, page attendue et extrait vérifiable ; 20 hors corpus) dans eval/questions.jsonl, avec schéma, test de cohérence en CI et script de vérification sur les PDF. À valider par Francis (procédure dans eval/A-VALIDER.md).
 - Chiffre mesuré : 40 extraits de référence sur 40 retrouvés sur la page attendue (scripts/check_eval_set.py, 2026-10-11)
