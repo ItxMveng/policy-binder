@@ -129,3 +129,19 @@ def test_ollama_needs_no_key_and_unknown_provider_fails() -> None:
     assert make_provider("ollama", "llama3.1:8b").base_url == "http://localhost:11434/v1"
     with pytest.raises(ValueError):
         make_provider("inconnu", "m")
+
+
+def test_provider_retries_after_network_error() -> None:
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        if len(calls) == 1:
+            raise httpx.ConnectError("connexion réinitialisée")
+        return _chat_response("ok")
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    provider = ChatCompletionsProvider("https://example.org/v1", "m", client=client, sleep=0)
+    response = provider.complete("s", "u")
+    assert response.text == "ok"
+    assert response.rate_limit_wait_s >= 0

@@ -16,6 +16,7 @@ BASE_URLS = {
     "ollama": "http://localhost:11434/v1",  # local, sans clé
 }
 MAX_RETRIES = 5
+RETRY_STATUSES = {429, 500, 502, 503}  # débit dépassé ou incident passager du fournisseur
 
 
 class LLMResponse(BaseModel):
@@ -23,6 +24,8 @@ class LLMResponse(BaseModel):
     model: str
     input_tokens: int
     output_tokens: int
+    # Temps passé à attendre après un refus de débit (429) : exclu des mesures de latence.
+    rate_limit_wait_s: float = 0.0
 
 
 class LLMProvider(Protocol):
@@ -59,15 +62,26 @@ class ChatCompletionsProvider:
                 {"role": "user", "content": user},
             ],
         }
+        # waited = durée des tentatives ratées + attentes : exclue de la latence mesurée.
+        waited = 0.0
         for attempt in range(MAX_RETRIES + 1):
-            response = self._client.post(
-                f"{self.base_url}/chat/completions", headers=self._headers, json=payload
-            )
-            if response.status_code != 429 or attempt == MAX_RETRIES:
-                break
-            retry_after = response.headers.get("retry-after")
-            delay = float(retry_after) if retry_after else self._sleep * 2**attempt
+            started = time.perf_counter()
+            last_attempt = attempt == MAX_RETRIES
+            try:
+                response = self._client.post(
+                    f"{self.base_url}/chat/completions", headers=self._headers, json=payload
+                )
+            except httpx.TransportError:  # coupure réseau passagère : on réessaie
+                if last_attempt:
+                    raise
+                delay = self._sleep * 2**attempt
+            else:
+                if response.status_code not in RETRY_STATUSES or last_attempt:
+                    break
+                retry_after = response.headers.get("retry-after")
+                delay = float(retry_after) if retry_after else self._sleep * 2**attempt
             time.sleep(delay)
+            waited += time.perf_counter() - started
         response.raise_for_status()
         body = response.json()
         usage = body.get("usage") or {}
@@ -76,6 +90,7 @@ class ChatCompletionsProvider:
             model=body.get("model", self.model),
             input_tokens=usage.get("prompt_tokens", 0),
             output_tokens=usage.get("completion_tokens", 0),
+            rate_limit_wait_s=waited,
         )
 
 

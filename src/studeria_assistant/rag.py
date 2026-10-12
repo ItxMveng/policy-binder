@@ -102,7 +102,7 @@ class Assistant:
             abstained=abstained,
             citations=[] if abstained else extract_citations(response.text, passages),
             retrieved=passages,
-            latency_ms=(time.perf_counter() - start) * 1000,
+            latency_ms=(time.perf_counter() - start - response.rate_limit_wait_s) * 1000,
             input_tokens=response.input_tokens,
             output_tokens=response.output_tokens,
         )
