@@ -32,6 +32,16 @@ class Settings(BaseSettings):
     # -6.582 (10 candidats, 400 caractères). None = pas de seuil.
     min_score: float | None = -2.362
 
+    # Protection de la démo publique : questions par adresse IP sur une fenêtre glissante,
+    # et quota quotidien global (toutes adresses confondues).
+    rate_limit_per_ip: int = 10
+    rate_limit_window_s: int = 600
+    daily_quota: int = 300
+    # Traces Langfuse : activées seulement si les deux clés sont présentes (.env ou secrets).
+    langfuse_public_key: str | None = None
+    langfuse_secret_key: SecretStr | None = None
+    langfuse_host: str = "https://cloud.langfuse.com"
+
     @property
     def llm_ready(self) -> bool:
         return self.llm_provider == "ollama" or self.llm_api_key is not None

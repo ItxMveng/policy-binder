@@ -57,3 +57,19 @@ def test_cors_allows_local_front() -> None:
         headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
     )
     assert response.headers.get("access-control-allow-origin") == "http://localhost:5173"
+
+
+def test_ask_returns_429_when_limit_reached(monkeypatch: pytest.MonkeyPatch) -> None:
+    from policy_binder import api
+    from policy_binder.ratelimit import DemoLimiter
+
+    monkeypatch.setattr(api, "limiter", DemoLimiter(per_ip=1, window_s=600, daily=100))
+    assistant = Assistant(FakeRetriever(PASSAGES), FakeLLM("Il faut le déclarer [1]."))
+    app.dependency_overrides[get_assistant] = lambda: assistant
+    try:
+        assert client.post("/ask", json={"question": "Première ?"}).status_code == 200
+        second = client.post("/ask", json={"question": "Deuxième ?"})
+    finally:
+        app.dependency_overrides.clear()
+    assert second.status_code == 429
+    assert "réessayez" in second.json()["detail"]

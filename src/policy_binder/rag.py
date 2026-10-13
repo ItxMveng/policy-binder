@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from policy_binder.index import ScoredChunk
 from policy_binder.llm import LLMProvider
+from policy_binder.tracing import NoopTracer, Tracer
 
 ABSTENTION = "Je ne trouve pas cette information dans les documents."
 
@@ -86,16 +87,40 @@ class Assistant:
     """
 
     def __init__(
-        self, retriever: Retriever, llm: LLMProvider, k: int = 5, min_score: float | None = None
+        self,
+        retriever: Retriever,
+        llm: LLMProvider,
+        k: int = 5,
+        min_score: float | None = None,
+        tracer: Tracer | None = None,
     ) -> None:
         self.retriever = retriever
         self.llm = llm
         self.k = k
         self.min_score = min_score
+        self.tracer: Tracer = tracer or NoopTracer()
 
     def answer(self, question: str) -> Answer:
+        with self.tracer.observe("question", as_type="chain", input=question) as trace:
+            answer = self._answer(question)
+            trace.update(
+                output=answer.text,
+                metadata={
+                    "abstention": answer.abstained,
+                    "abstention_avant_llm": answer.abstained_before_llm,
+                    "citations": [f"{c.source_id} p.{c.page}" for c in answer.citations],
+                    "latence_ms": round(answer.latency_ms),
+                },
+            )
+        return answer
+
+    def _answer(self, question: str) -> Answer:
         start = time.perf_counter()
-        passages = self.retriever.search(question, self.k)
+        with self.tracer.observe("recherche", as_type="retriever", input=question) as step:
+            passages = self.retriever.search(question, self.k)
+            step.update(
+                output=[{"passage": hit.chunk.id, "score": round(hit.score, 3)} for hit in passages]
+            )
         below_threshold = (
             self.min_score is not None and bool(passages) and passages[0].score < self.min_score
         )
@@ -109,7 +134,14 @@ class Assistant:
                 latency_ms=(time.perf_counter() - start) * 1000,
                 abstained_before_llm=True,
             )
-        response = self.llm.complete(SYSTEM_PROMPT, build_user_prompt(question, passages))
+        prompt = build_user_prompt(question, passages)
+        with self.tracer.observe("generation", as_type="generation", input=prompt) as step:
+            response = self.llm.complete(SYSTEM_PROMPT, prompt)
+            step.update(
+                output=response.text,
+                model=response.model,
+                usage_details={"input": response.input_tokens, "output": response.output_tokens},
+            )
         abstained = is_abstention(response.text)
         return Answer(
             question=question,

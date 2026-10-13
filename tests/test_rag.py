@@ -158,3 +158,47 @@ def test_top_score_above_threshold_calls_llm() -> None:
     llm = FakeLLM("Il faut déclarer l'usage [1].")
     answer = Assistant(FakeRetriever(PASSAGES), llm, min_score=0.5).answer("IA ?")
     assert not answer.abstained and llm.calls == 1
+
+
+class RecordingTracer:
+    """Faux traceur : enregistre les étapes ouvertes et les champs mis à jour."""
+
+    def __init__(self) -> None:
+        self.steps: list[tuple[str, str]] = []
+        self.updates: dict[str, dict[str, object]] = {}
+
+    def observe(self, name: str, as_type: str = "span", **fields: object):  # type: ignore[no-untyped-def]
+        from contextlib import contextmanager
+
+        tracer = self
+
+        class Step:
+            def update(self, **values: object) -> None:
+                tracer.updates.setdefault(name, {}).update(values)
+
+        @contextmanager
+        def manager():  # type: ignore[no-untyped-def]
+            tracer.steps.append((name, as_type))
+            yield Step()
+
+        return manager()
+
+
+def test_trace_records_retrieval_generation_and_outcome() -> None:
+    tracer = RecordingTracer()
+    llm = FakeLLM("Il faut déclarer l'usage [1].")
+    Assistant(FakeRetriever(PASSAGES), llm, tracer=tracer).answer("IA ?")
+    assert tracer.steps == [
+        ("question", "chain"),
+        ("recherche", "retriever"),
+        ("generation", "generation"),
+    ]
+    assert tracer.updates["generation"]["usage_details"] == {"input": 100, "output": 20}
+    metadata = tracer.updates["question"]["metadata"]
+    assert isinstance(metadata, dict) and metadata["abstention"] is False
+
+
+def test_trace_without_generation_when_abstaining_before_llm() -> None:
+    tracer = RecordingTracer()
+    Assistant(FakeRetriever(PASSAGES), FakeLLM("non"), min_score=0.9, tracer=tracer).answer("?")
+    assert [name for name, _ in tracer.steps] == ["question", "recherche"]
