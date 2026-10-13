@@ -12,3 +12,10 @@ uv sync
 uv run pytest
 uv run uvicorn studeria_assistant.api:app --reload
 ```
+
+## Évaluation
+Résultats et protocole : [docs/evaluation.md](docs/evaluation.md).
+```bash
+uv run python scripts/run_eval.py mon-essai --retrieval hybride --rerank --min-score -2.362
+```
+En CI ([.github/workflows/eval.yml](.github/workflows/eval.yml)), 20 questions sont évaluées à chaque changement du système et bloquent sous les seuils de `eval/ci_gate.json` ; les 60 questions sont évaluées à chaque tag `v*`. Le job a besoin du secret `LLM_API_KEY` (clé Groq), à ajouter avec `gh secret set LLM_API_KEY` ; sans lui, il s'arrête avec un avertissement.
