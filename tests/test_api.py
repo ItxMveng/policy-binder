@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from policy_help_desk.api import app, get_assistant
-from policy_help_desk.rag import Assistant
+from policy_binder.api import app, get_assistant
+from policy_binder.rag import Assistant
 from tests.test_rag import PASSAGES, FakeLLM, FakeRetriever
 
 client = TestClient(app)
@@ -41,3 +41,19 @@ def test_ask_without_key_returns_503(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("LLM_PROVIDER", raising=False)
     monkeypatch.chdir("/")  # aucun fichier .env lu
     assert client.post("/ask", json={"question": "Bonjour ?"}).status_code == 503
+
+
+def test_sources_lists_official_urls() -> None:
+    response = client.get("/sources")
+    assert response.status_code == 200
+    sources = response.json()
+    assert len(sources) >= 6
+    assert all(source["url"].startswith("https://") for source in sources)
+
+
+def test_cors_allows_local_front() -> None:
+    response = client.options(
+        "/ask",
+        headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
+    )
+    assert response.headers.get("access-control-allow-origin") == "http://localhost:5173"

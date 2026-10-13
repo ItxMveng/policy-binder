@@ -6,8 +6,8 @@ Usage : uv run python scripts/download_sources.py
 import json
 import sys
 
-from policy_help_desk.config import get_settings
-from policy_help_desk.sources import download_source, load_sources, make_client
+from policy_binder.config import get_settings
+from policy_binder.sources import download_source, load_sources, make_client
 
 
 def main() -> int:

@@ -3,10 +3,10 @@ import json
 import httpx
 import pytest
 
-from policy_help_desk.index import ScoredChunk
-from policy_help_desk.ingest import Chunk
-from policy_help_desk.llm import ChatCompletionsProvider, LLMResponse, make_provider
-from policy_help_desk.rag import ABSTENTION, Assistant, build_user_prompt, extract_citations
+from policy_binder.index import ScoredChunk
+from policy_binder.ingest import Chunk
+from policy_binder.llm import ChatCompletionsProvider, LLMResponse, make_provider
+from policy_binder.rag import ABSTENTION, Assistant, build_user_prompt, extract_citations
 
 PASSAGES = [
     ScoredChunk(

@@ -1,7 +1,7 @@
 import pytest
 
-from policy_help_desk.evalset import EvalQuestion
-from policy_help_desk.evaluation import (
+from policy_binder.evalset import EvalQuestion
+from policy_binder.evaluation import (
     QuestionResult,
     parse_verdict,
     percentile,
@@ -9,8 +9,8 @@ from policy_help_desk.evaluation import (
     summarize,
     wilson,
 )
-from policy_help_desk.llm import LLMResponse
-from policy_help_desk.rag import Answer, Citation
+from policy_binder.llm import LLMResponse
+from policy_binder.rag import Answer, Citation
 from tests.test_rag import PASSAGES
 
 QUESTION = EvalQuestion.model_validate(
@@ -127,7 +127,7 @@ def test_summarize_rates_and_cost() -> None:
 
 
 def test_hit_at_k_page_and_document_levels() -> None:
-    from policy_help_desk.evaluation import hit_at_k
+    from policy_binder.evaluation import hit_at_k
 
     # PASSAGES : [ia p.11, examens p.3] ; QUESTION attend (ia, 11)
     assert hit_at_k(QUESTION, PASSAGES, k=1)
@@ -136,7 +136,7 @@ def test_hit_at_k_page_and_document_levels() -> None:
 
 
 def test_choose_threshold_keeps_every_answerable_calibration_question() -> None:
-    from policy_help_desk.evaluation import choose_threshold
+    from policy_binder.evaluation import choose_threshold
 
     answerable = [2.1, 0.4, 5.0]
     threshold = choose_threshold(answerable)
@@ -147,7 +147,7 @@ def test_choose_threshold_keeps_every_answerable_calibration_question() -> None:
 
 
 def test_gate_blocks_regressions_and_passes_good_runs() -> None:
-    from policy_help_desk.evaluation import Gate, check_gate
+    from policy_binder.evaluation import Gate, check_gate
 
     gate = Gate(
         correct_ou_partiel_min=1,

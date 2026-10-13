@@ -4,9 +4,9 @@ import sys
 
 from qdrant_client import QdrantClient
 
-from policy_help_desk.config import get_settings
-from policy_help_desk.embeddings import FastEmbedEmbedder
-from policy_help_desk.index import DenseIndex
+from policy_binder.config import get_settings
+from policy_binder.embeddings import FastEmbedEmbedder
+from policy_binder.index import DenseIndex
 
 
 def main() -> None:

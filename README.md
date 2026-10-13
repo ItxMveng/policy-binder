@@ -1,6 +1,6 @@
-# Guichet des règlements
+# Le Classeur
 
-**Posez votre question sur le règlement : la réponse cite la page, ou dit qu'elle ne sait pas.**
+**Posez votre question sur le règlement : Le Classeur répond en citant la page, ou dit qu'il ne sait pas.**
 
 Assistant documentaire fiable et évalué : il répond aux questions sur des règlements et chartes en citant les passages utilisés, et dit « je ne sais pas » quand l'information n'est pas dans les documents.
 
@@ -12,7 +12,7 @@ Corpus : documents institutionnels publics de l'ENIB (Bretagne INP), de l'Univer
 ```bash
 uv sync
 uv run pytest
-uv run uvicorn policy_help_desk.api:app --reload
+uv run uvicorn policy_binder.api:app --reload
 ```
 
 ## Évaluation

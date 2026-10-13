@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-13 — Renommage définitif : Le Classeur
+- Fait : le projet s'appelle désormais « Le Classeur » (choix de Francis, à la place de « Guichet des règlements ») ; dépôt github.com/ItxMveng/policy-binder (les anciennes adresses redirigent), paquet Python policy_binder.
+- Chiffre mesuré : aucun
+- Décision technique : un nom simple et concret — le classeur où l'on range les règlements et où l'on vient chercher la bonne page — plutôt qu'un nom de marque.
+- Visuel disponible : aucun
+
 ## 2026-10-13 — Renommage : Guichet des règlements
 - Fait : le projet « Studeria Assistant » s'appelle désormais « Guichet des règlements » ; dépôt renommé en github.com/ItxMveng/policy-help-desk (les anciennes adresses redirigent), paquet Python policy_help_desk.
 - Chiffre mesuré : aucun

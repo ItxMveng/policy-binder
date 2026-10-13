@@ -10,8 +10,8 @@ import unicodedata
 from collections import Counter
 from collections.abc import Sequence
 
-from policy_help_desk.index import ScoredChunk
-from policy_help_desk.ingest import Chunk
+from policy_binder.index import ScoredChunk
+from policy_binder.ingest import Chunk
 
 # Mots-outils français fréquents : ils n'aident pas à distinguer les passages.
 _STOPWORDS_TEXT = (

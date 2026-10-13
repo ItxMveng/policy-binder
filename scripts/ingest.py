@@ -5,9 +5,9 @@ Usage : uv run python scripts/ingest.py   (après scripts/download_sources.py)
 
 from collections import Counter
 
-from policy_help_desk.config import get_settings
-from policy_help_desk.ingest import ingest_sources, write_chunks
-from policy_help_desk.sources import load_sources
+from policy_binder.config import get_settings
+from policy_binder.ingest import ingest_sources, write_chunks
+from policy_binder.sources import load_sources
 
 
 def main() -> None:

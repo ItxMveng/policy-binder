@@ -6,8 +6,8 @@ from typing import Protocol
 
 from pydantic import BaseModel
 
-from policy_help_desk.index import ScoredChunk
-from policy_help_desk.llm import LLMProvider
+from policy_binder.index import ScoredChunk
+from policy_binder.llm import LLMProvider
 
 ABSTENTION = "Je ne trouve pas cette information dans les documents."
 

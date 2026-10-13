@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-from policy_help_desk.evaluation import Gate, Summary, check_gate
+from policy_binder.evaluation import Gate, Summary, check_gate
 
 
 def main() -> int:

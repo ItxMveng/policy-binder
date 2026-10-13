@@ -1,9 +1,9 @@
 import pytest
 from pydantic import ValidationError
 
-from policy_help_desk.config import ROOT_DIR
-from policy_help_desk.evalset import EvalQuestion, check_eval_set, load_questions
-from policy_help_desk.sources import load_sources
+from policy_binder.config import ROOT_DIR
+from policy_binder.evalset import EvalQuestion, check_eval_set, load_questions
+from policy_binder.sources import load_sources
 
 
 def test_versioned_eval_set_is_coherent() -> None:

@@ -1,7 +1,7 @@
-from policy_help_desk.bm25 import BM25Index, tokenize
-from policy_help_desk.hybrid import HybridRetriever, reciprocal_rank_fusion
-from policy_help_desk.index import ScoredChunk
-from policy_help_desk.ingest import Chunk
+from policy_binder.bm25 import BM25Index, tokenize
+from policy_binder.hybrid import HybridRetriever, reciprocal_rank_fusion
+from policy_binder.index import ScoredChunk
+from policy_binder.ingest import Chunk
 
 
 def _chunk(chunk_id: str, text: str) -> Chunk:

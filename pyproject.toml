@@ -1,5 +1,5 @@
 [project]
-name = "policy-help-desk"
+name = "policy-binder"
 version = "0.1.0"
 description = "Assistant documentaire qui cite ses sources et sait s'abstenir, évalué sur un jeu de test versionné."
 readme = "README.md"

@@ -5,10 +5,10 @@ Usage : uv run python scripts/check_eval_set.py   (après scripts/download_sourc
 
 import sys
 
-from policy_help_desk.config import get_settings
-from policy_help_desk.evalset import check_eval_set, load_questions
-from policy_help_desk.ingest import pdf_pages
-from policy_help_desk.sources import load_sources, raw_pdf_path
+from policy_binder.config import get_settings
+from policy_binder.evalset import check_eval_set, load_questions
+from policy_binder.ingest import pdf_pages
+from policy_binder.sources import load_sources, raw_pdf_path
 
 
 def main() -> int:

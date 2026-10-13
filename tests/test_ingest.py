@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from policy_help_desk.ingest import Chunk, chunk_pages, clean_text, read_chunks, split_text
-from policy_help_desk.sources import Source
+from policy_binder.ingest import Chunk, chunk_pages, clean_text, read_chunks, split_text
+from policy_binder.sources import Source
 
 SOURCE = Source.model_validate(
     {
@@ -44,7 +44,7 @@ def test_chunks_keep_page_and_skip_tiny_fragments() -> None:
 
 
 def test_chunks_roundtrip_jsonl(tmp_path: Path) -> None:
-    from policy_help_desk.ingest import write_chunks
+    from policy_binder.ingest import write_chunks
 
     chunk = Chunk(id="a-p1-c0", source_id="a", title="A", page=1, text="Texte « accentué ».")
     path = tmp_path / "chunks.jsonl"

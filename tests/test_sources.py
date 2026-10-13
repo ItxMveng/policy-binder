@@ -3,8 +3,8 @@ from pathlib import Path
 import httpx
 import pytest
 
-from policy_help_desk.config import ROOT_DIR
-from policy_help_desk.sources import Source, download_source, load_sources
+from policy_binder.config import ROOT_DIR
+from policy_binder.sources import Source, download_source, load_sources
 
 SOURCES_FILE = ROOT_DIR / "data" / "sources.yaml"
 

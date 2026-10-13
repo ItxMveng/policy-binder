@@ -4,13 +4,22 @@ from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from policy_help_desk import __version__
-from policy_help_desk.config import get_settings
-from policy_help_desk.rag import Answer, Assistant
+from policy_binder import __version__
+from policy_binder.config import get_settings
+from policy_binder.rag import Answer, Assistant
+from policy_binder.sources import load_sources
 
-app = FastAPI(title="Guichet des règlements", version=__version__)
+app = FastAPI(title="Le Classeur", version=__version__)
+# Le front (Vite en local, Vercel en production) appelle l'API depuis une autre origine.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=get_settings().allowed_origins,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+)
 
 
 class Question(BaseModel):
@@ -22,13 +31,13 @@ def _build_assistant() -> Assistant:
     """Construit l'assistant une seule fois (modèle d'embeddings et index chargés au 1er appel)."""
     from qdrant_client import QdrantClient
 
-    from policy_help_desk.bm25 import BM25Index
-    from policy_help_desk.embeddings import FastEmbedEmbedder
-    from policy_help_desk.hybrid import HybridRetriever
-    from policy_help_desk.index import DenseIndex
-    from policy_help_desk.ingest import read_chunks
-    from policy_help_desk.llm import make_provider
-    from policy_help_desk.rag import Retriever
+    from policy_binder.bm25 import BM25Index
+    from policy_binder.embeddings import FastEmbedEmbedder
+    from policy_binder.hybrid import HybridRetriever
+    from policy_binder.index import DenseIndex
+    from policy_binder.ingest import read_chunks
+    from policy_binder.llm import make_provider
+    from policy_binder.rag import Retriever
 
     settings = get_settings()
     key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
@@ -40,7 +49,7 @@ def _build_assistant() -> Assistant:
         retriever = HybridRetriever(retriever, BM25Index(chunks))
     min_score = None
     if settings.rerank:
-        from policy_help_desk.rerank import FastEmbedReranker, RerankingRetriever
+        from policy_binder.rerank import FastEmbedReranker, RerankingRetriever
 
         retriever = RerankingRetriever(
             retriever, FastEmbedReranker(), settings.rerank_candidates, settings.rerank_max_chars
@@ -59,6 +68,22 @@ def get_assistant() -> Assistant:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "version": __version__}
+
+
+class SourceInfo(BaseModel):
+    id: str
+    title: str
+    institution: str
+    url: str
+
+
+@app.get("/sources")
+def sources() -> list[SourceInfo]:
+    """Documents du corpus avec leur URL officielle : le front en fait des liens « page N »."""
+    return [
+        SourceInfo(id=s.id, title=s.title, institution=s.institution, url=str(s.url))
+        for s in load_sources(get_settings().data_dir / "sources.yaml")
+    ]
 
 
 @app.post("/ask")

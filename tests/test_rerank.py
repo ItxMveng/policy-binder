@@ -1,8 +1,8 @@
 from collections.abc import Sequence
 
-from policy_help_desk.index import ScoredChunk
-from policy_help_desk.ingest import Chunk
-from policy_help_desk.rerank import RerankingRetriever
+from policy_binder.index import ScoredChunk
+from policy_binder.ingest import Chunk
+from policy_binder.rerank import RerankingRetriever
 
 
 def _hit(chunk_id: str, text: str) -> ScoredChunk:

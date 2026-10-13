@@ -5,7 +5,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, model_validator
 
-from policy_help_desk.sources import Source
+from policy_binder.sources import Source
 
 
 class ExpectedSource(BaseModel):

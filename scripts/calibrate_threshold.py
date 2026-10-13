@@ -10,15 +10,15 @@ import json
 
 from qdrant_client import QdrantClient
 
-from policy_help_desk.bm25 import BM25Index
-from policy_help_desk.config import get_settings
-from policy_help_desk.embeddings import FastEmbedEmbedder
-from policy_help_desk.evalset import load_questions
-from policy_help_desk.evaluation import choose_threshold
-from policy_help_desk.hybrid import HybridRetriever
-from policy_help_desk.index import DenseIndex
-from policy_help_desk.ingest import read_chunks
-from policy_help_desk.rerank import DEFAULT_RERANKER, FastEmbedReranker, RerankingRetriever
+from policy_binder.bm25 import BM25Index
+from policy_binder.config import get_settings
+from policy_binder.embeddings import FastEmbedEmbedder
+from policy_binder.evalset import load_questions
+from policy_binder.evaluation import choose_threshold
+from policy_binder.hybrid import HybridRetriever
+from policy_binder.index import DenseIndex
+from policy_binder.ingest import read_chunks
+from policy_binder.rerank import DEFAULT_RERANKER, FastEmbedReranker, RerankingRetriever
 
 
 def main() -> None:

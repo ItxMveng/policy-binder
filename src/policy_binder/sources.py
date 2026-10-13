@@ -8,7 +8,7 @@ import httpx
 import yaml
 from pydantic import BaseModel, HttpUrl
 
-USER_AGENT = "policy-help-desk/0.1 (+https://github.com/ItxMveng/policy-help-desk)"
+USER_AGENT = "policy-binder/0.1 (+https://github.com/ItxMveng/policy-binder)"
 
 
 class Source(BaseModel):
