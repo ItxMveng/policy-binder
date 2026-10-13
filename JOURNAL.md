@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-13 — P1-10 Interface de chat
+- Fait : interface de chat React + Vite + TypeScript : renvois [n] cliquables vers le passage utilisé et lien vers le PDF officiel ouvert à la bonne page, abstention présentée à part, thème clair/sombre, mobile ; route /sources et CORS côté API ; tests Vitest et job front en CI.
+- Chiffre mesuré : aucun (vérification de bout en bout en local : réponse correcte citant la charte des examens, page 3)
+- Décision technique : lier au PDF officiel à la page exacte plutôt qu'héberger les documents : l'utilisateur vérifie chez l'établissement, sans redistribution.
+- Visuel disponible : aucun
+
 ## 2026-10-13 — Renommage définitif : Le Classeur
 - Fait : le projet s'appelle désormais « Le Classeur » (choix de Francis, à la place de « Guichet des règlements ») ; dépôt github.com/ItxMveng/policy-binder (les anciennes adresses redirigent), paquet Python policy_binder.
 - Chiffre mesuré : aucun

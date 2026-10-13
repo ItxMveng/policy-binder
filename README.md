@@ -15,6 +15,14 @@ uv run pytest
 uv run uvicorn policy_binder.api:app --reload
 ```
 
+## Interface de chat (frontend/)
+React + Vite + TypeScript. Chaque renvoi [n] de la réponse mène au passage utilisé et au PDF officiel ouvert à la bonne page.
+```bash
+uv run uvicorn policy_binder.api:app --port 8000
+cd frontend && npm install && npm run dev   # http://localhost:5173
+```
+L'adresse de l'API se règle avec `VITE_API_URL` (par défaut `http://localhost:8000`) ; côté API, `ALLOWED_ORIGINS` liste les origines autorisées (CORS).
+
 ## Évaluation
 Résultats et protocole : [docs/evaluation.md](docs/evaluation.md).
 ```bash

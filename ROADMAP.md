@@ -16,7 +16,7 @@
 - [x] P1-09 Évaluation en CI — 20 questions en CI bloquantes sous le seuil, évaluation complète sur tag (fait le 2026-10-13)
 
 ## Déploiement et observabilité
-- [ ] P1-10 Interface de chat — React + Vite + TypeScript, citations cliquables vers la page du document
+- [x] P1-10 Interface de chat — React + Vite + TypeScript, citations cliquables vers la page du document (fait le 2026-10-13)
 - [ ] P1-11 Traces Langfuse et protection de la démo — traces de chaque requête (latence, tokens), limite par IP et quota quotidien
 - [ ] P1-12 Déploiement — Terraform + Cloud Run (europe-west9) + Qdrant Cloud + Vercel, URL publique fonctionnelle
 - [ ] P1-13 Rapport docs/evaluation.md — protocole, jeu de test, résultats, comparaison base naïve vs version finale
