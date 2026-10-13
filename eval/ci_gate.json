@@ -1,0 +1,7 @@
+{
+  "_regle": "Seuils fixés le 2026-10-13 avant toute exécution en CI : la configuration retenue obtient 13/14, 1 refus, 0 incorrecte, 6/6 sur ce sous-ensemble ; la base naïve (8/14) et l'hybride seul (7/14, 2 incorrectes) auraient été bloqués.",
+  "correct_ou_partiel_min": 11,
+  "abstention_correcte_min": 6,
+  "reponses_incorrectes_max": 1,
+  "refus_injustifies_max": 3
+}

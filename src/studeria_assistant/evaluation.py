@@ -142,6 +142,7 @@ class Summary(BaseModel):
     contexte_document_attendu: Rate  # hit@k au niveau document
     refus_injustifies: Rate  # abstention sur une question qui a une réponse
     abstention_correcte: Rate  # abstention sur une question hors corpus
+    reponses_incorrectes: int = 0  # verdict « incorrect » : réponse fausse affirmée
     latence_p50_ms: float
     latence_p95_ms: float
     tokens_entree_moyen: float
@@ -171,6 +172,7 @@ def summarize(
         ),
         refus_injustifies=wilson(sum(r.abstained for r in answerable), len(answerable)),
         abstention_correcte=wilson(sum(r.abstained for r in out_of_corpus), len(out_of_corpus)),
+        reponses_incorrectes=sum(r.verdict == "incorrect" for r in answerable),
         latence_p50_ms=percentile(latencies, 0.50),
         latence_p95_ms=percentile(latencies, 0.95),
         tokens_entree_moyen=mean_in,
@@ -200,3 +202,36 @@ def choose_threshold(answerable_scores: list[float]) -> float:
     if not answerable_scores:
         raise ValueError("au moins une question avec réponse est nécessaire pour calibrer")
     return min(answerable_scores)
+
+
+class Gate(BaseModel):
+    """Seuils bloquants de l'évaluation en CI (eval/ci_gate.json), en nombres de questions."""
+
+    correct_ou_partiel_min: int
+    abstention_correcte_min: int
+    reponses_incorrectes_max: int
+    refus_injustifies_max: int
+
+
+def check_gate(summary: Summary, gate: Gate) -> list[str]:
+    """Renvoie la liste des seuils non respectés (vide = la CI passe)."""
+    failures = []
+    if summary.exactitude_correct_ou_partiel.count < gate.correct_ou_partiel_min:
+        failures.append(
+            f"correct ou partiel {summary.exactitude_correct_ou_partiel.count} "
+            f"< {gate.correct_ou_partiel_min}"
+        )
+    if summary.abstention_correcte.count < gate.abstention_correcte_min:
+        failures.append(
+            f"abstention correcte {summary.abstention_correcte.count} "
+            f"< {gate.abstention_correcte_min}"
+        )
+    if summary.reponses_incorrectes > gate.reponses_incorrectes_max:
+        failures.append(
+            f"réponses incorrectes {summary.reponses_incorrectes} > {gate.reponses_incorrectes_max}"
+        )
+    if summary.refus_injustifies.count > gate.refus_injustifies_max:
+        failures.append(
+            f"refus injustifiés {summary.refus_injustifies.count} > {gate.refus_injustifies_max}"
+        )
+    return failures

@@ -144,3 +144,23 @@ def test_choose_threshold_keeps_every_answerable_calibration_question() -> None:
     assert all(score >= threshold for score in answerable)
     with pytest.raises(ValueError):
         choose_threshold([])
+
+
+def test_gate_blocks_regressions_and_passes_good_runs() -> None:
+    from studeria_assistant.evaluation import Gate, check_gate
+
+    gate = Gate(
+        correct_ou_partiel_min=1,
+        abstention_correcte_min=1,
+        reponses_incorrectes_max=0,
+        refus_injustifies_max=0,
+    )
+    good = summarize(
+        [_result(True, "correct", False), _result(False, "hors_corpus", True)], 0.15, 0.60
+    )
+    assert check_gate(good, gate) == []
+    bad = summarize(
+        [_result(True, "incorrect", False), _result(False, "hors_corpus", False)], 0.15, 0.60
+    )
+    failures = check_gate(bad, gate)
+    assert len(failures) == 3  # pas de bonne réponse, pas d'abstention, une réponse fausse

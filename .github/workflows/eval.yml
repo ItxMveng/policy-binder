@@ -1,0 +1,97 @@
+name: Évaluation
+
+# Sous-ensemble de 20 questions à chaque changement du système (bloquant sous les seuils de
+# eval/ci_gate.json) ; évaluation complète des 60 questions à chaque tag de version.
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "src/**"
+      - "scripts/**"
+      - "eval/questions.jsonl"
+      - "eval/ci_subset.txt"
+      - "eval/ci_gate.json"
+      - "data/sources.yaml"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/eval.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "scripts/**"
+      - "eval/**"
+      - "data/sources.yaml"
+  workflow_dispatch:
+
+# Une seule évaluation à la fois : l'offre gratuite de Groq limite le débit par organisation.
+concurrency:
+  group: evaluation
+  cancel-in-progress: false
+
+jobs:
+  evaluation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      FASTEMBED_CACHE_PATH: ${{ github.workspace }}/.cache/fastembed
+      PYTHONIOENCODING: utf-8
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Vérifier la présence de la clé LLM
+        id: cle
+        run: |
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "::warning::Secret LLM_API_KEY absent : évaluation ignorée (voir README)."
+            echo "presente=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "presente=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.cle.outputs.presente == 'true'
+
+      - uses: astral-sh/setup-uv@v6
+        if: steps.cle.outputs.presente == 'true'
+        with:
+          enable-cache: true
+
+      - name: Installer les dépendances
+        if: steps.cle.outputs.presente == 'true'
+        run: uv sync --frozen --python 3.12
+
+      - name: Cache des modèles locaux (embeddings, reranker)
+        if: steps.cle.outputs.presente == 'true'
+        uses: actions/cache@v4
+        with:
+          path: .cache/fastembed
+          key: fastembed-minilm-bge-reranker-v2-m3-int8
+
+      - name: Corpus, ingestion et index
+        if: steps.cle.outputs.presente == 'true'
+        run: |
+          uv run python scripts/download_sources.py
+          uv run python scripts/check_eval_set.py
+          uv run python scripts/ingest.py
+          uv run python scripts/build_index.py
+
+      - name: Évaluation du sous-ensemble CI (20 questions)
+        if: steps.cle.outputs.presente == 'true' && !startsWith(github.ref, 'refs/tags/')
+        run: uv run python scripts/run_eval.py ci --retrieval hybride --rerank --min-score -2.362 --subset eval/ci_subset.txt
+
+      - name: Seuils bloquants
+        if: steps.cle.outputs.presente == 'true' && !startsWith(github.ref, 'refs/tags/')
+        run: uv run python scripts/check_gate.py eval/results/ci.json
+
+      - name: Évaluation complète (60 questions, tag de version)
+        if: steps.cle.outputs.presente == 'true' && startsWith(github.ref, 'refs/tags/')
+        run: uv run python scripts/run_eval.py ${{ github.ref_name }} --retrieval hybride --rerank --min-score -2.362
+
+      - name: Publier les résultats
+        if: always() && steps.cle.outputs.presente == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-${{ github.ref_name }}-${{ github.sha }}
+          path: eval/results/
+          if-no-files-found: ignore

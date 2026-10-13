@@ -1,0 +1,71 @@
+{
+  "run": "ci-local",
+  "date": "2026-10-13T00:05:22+00:00",
+  "questions": 20,
+  "configuration": {
+    "retrieval": "hybride",
+    "reranker": "BAAI/bge-reranker-v2-m3-int8 (20 candidats, None car.)",
+    "seuil_abstention": -2.362,
+    "embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "top_k": 5,
+    "llm": "groq:openai/gpt-oss-120b",
+    "juge": "groq:qwen/qwen3.8-27b"
+  },
+  "resultats": {
+    "exactitude": {
+      "count": 9,
+      "total": 14,
+      "value": 0.6428571428571429,
+      "low": 0.3876400468214042,
+      "high": 0.8365550926279727
+    },
+    "exactitude_correct_ou_partiel": {
+      "count": 12,
+      "total": 14,
+      "value": 0.8571428571428571,
+      "low": 0.600580922361363,
+      "high": 0.9599069262620787
+    },
+    "citations_correctes": {
+      "count": 12,
+      "total": 13,
+      "value": 0.9230769230769231,
+      "low": 0.6668546607175265,
+      "high": 0.9862899336203037
+    },
+    "contexte_page_attendue": {
+      "count": 13,
+      "total": 14,
+      "value": 0.9285714285714286,
+      "low": 0.6853073044604219,
+      "high": 0.9872781138877085
+    },
+    "contexte_document_attendu": {
+      "count": 14,
+      "total": 14,
+      "value": 1.0,
+      "low": 0.7846829880728186,
+      "high": 1.0
+    },
+    "refus_injustifies": {
+      "count": 1,
+      "total": 14,
+      "value": 0.07142857142857142,
+      "low": 0.012721886112291636,
+      "high": 0.3146926955395781
+    },
+    "abstention_correcte": {
+      "count": 6,
+      "total": 6,
+      "value": 1.0,
+      "low": 0.6096569663469354,
+      "high": 0.9999999999999999
+    },
+    "reponses_incorrectes": 1,
+    "latence_p50_ms": 10762.77354999911,
+    "latence_p95_ms": 11870.193699994707,
+    "tokens_entree_moyen": 1098.9,
+    "tokens_sortie_moyen": 161.35,
+    "cout_1000_questions_usd": 0.26164499999999996
+  }
+}

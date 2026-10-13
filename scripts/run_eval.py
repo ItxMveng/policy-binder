@@ -10,6 +10,7 @@ import argparse
 import json
 import time
 from datetime import UTC, datetime
+from pathlib import Path
 
 from qdrant_client import QdrantClient
 
@@ -40,6 +41,7 @@ def main() -> None:
     parser.add_argument("--retrieval", choices=["dense", "hybride"], default="dense")
     parser.add_argument("--rerank", action="store_true", help="reranker sur 20 candidats")
     parser.add_argument("--min-score", type=float, default=None, help="seuil d'abstention")
+    parser.add_argument("--subset", type=Path, default=None, help="fichier d'identifiants")
     parser.add_argument("--rerank-candidates", type=int, default=None)
     parser.add_argument("--rerank-max-chars", type=int, default=None, help="0 = passage entier")
     args = parser.parse_args()
@@ -50,7 +52,12 @@ def main() -> None:
     if args.rerank_max_chars is not None:
         settings.rerank_max_chars = args.rerank_max_chars or None
     key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
-    questions = load_questions(settings.data_dir.parent / "eval" / "questions.jsonl")[: args.limit]
+    questions = load_questions(settings.data_dir.parent / "eval" / "questions.jsonl")
+    if args.subset is not None:
+        lines = args.subset.read_text(encoding="utf-8").splitlines()
+        wanted = {line.strip() for line in lines if line.strip() and not line.startswith("#")}
+        questions = [q for q in questions if q.id in wanted]
+    questions = questions[: args.limit]
     client = QdrantClient(path=str(settings.qdrant_path))
     retriever: Retriever = DenseIndex(client, FastEmbedEmbedder())
     if args.retrieval == "hybride":

@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-13 — P1-09 Évaluation en CI
+- Fait : évaluation en CI : 20 questions (une sur trois, règle fixe) à chaque changement du système, bloquantes sous des seuils fixés avant la première exécution ; évaluation complète des 60 questions à chaque tag v*, résultats publiés en artefact ; job désactivé proprement sans le secret LLM_API_KEY.
+- Chiffre mesuré : essai local du sous-ensemble CI (eval/results/ci-local.json) : correct ou partiel 12/14, abstention correcte 6/6, 1 réponse incorrecte, 1 refus injustifié — seuils respectés
+- Décision technique : seuils en nombre de questions avec une marge mesurée (11/14 pour un score actuel de 12–13/14), sauf l'abstention hors corpus exigée à 6/6 : la CI tolère le bruit du LLM mais pas une réponse inventée.
+- Visuel disponible : aucun
+
 ## 2026-10-13 — P1-08 Reranking et seuil d'abstention
 - Fait : reranker cross-encoder local (bge-reranker-v2-m3) sur 20 candidats de la recherche hybride, et seuil d'abstention qui évite d'appeler le LLM quand aucun passage n'est pertinent ; seuil et réglage calibrés sur 24 questions distinctes du jeu de test ; configuration par défaut de l'API.
 - Chiffre mesuré : hybride + reranker + seuil (eval/results/hybride-rerank-complet.json) : exactitude 70 % (IC 55–82 %) contre 42,5 % pour la base naïve, refus injustifiés 5 % contre 37,5 %, 0 réponse incorrecte, abstention hors corpus 20/20 dont 15 sans appel au LLM ; latence p50 10,5 s sur CPU de portable
