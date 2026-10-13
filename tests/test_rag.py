@@ -3,10 +3,10 @@ import json
 import httpx
 import pytest
 
-from studeria_assistant.index import ScoredChunk
-from studeria_assistant.ingest import Chunk
-from studeria_assistant.llm import ChatCompletionsProvider, LLMResponse, make_provider
-from studeria_assistant.rag import ABSTENTION, Assistant, build_user_prompt, extract_citations
+from policy_help_desk.index import ScoredChunk
+from policy_help_desk.ingest import Chunk
+from policy_help_desk.llm import ChatCompletionsProvider, LLMResponse, make_provider
+from policy_help_desk.rag import ABSTENTION, Assistant, build_user_prompt, extract_citations
 
 PASSAGES = [
     ScoredChunk(

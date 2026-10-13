@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-13 — Renommage : Guichet des règlements
+- Fait : le projet « Studeria Assistant » s'appelle désormais « Guichet des règlements » ; dépôt renommé en github.com/ItxMveng/policy-help-desk (les anciennes adresses redirigent), paquet Python policy_help_desk.
+- Chiffre mesuré : aucun
+- Décision technique : un nom qui dit ce que fait le produit (on vient poser sa question au guichet, la réponse cite le texte) plutôt qu'un nom de marque.
+- Visuel disponible : aucun
+
 ## 2026-10-13 — P1-09 Évaluation en CI
 - Fait : évaluation en CI : 20 questions (une sur trois, règle fixe) à chaque changement du système, bloquantes sous des seuils fixés avant la première exécution ; évaluation complète des 60 questions à chaque tag v*, résultats publiés en artefact ; job désactivé proprement sans le secret LLM_API_KEY.
 - Chiffre mesuré : essai local du sous-ensemble CI (eval/results/ci-local.json) : correct ou partiel 12/14, abstention correcte 6/6, 1 réponse incorrecte, 1 refus injustifié — seuils respectés

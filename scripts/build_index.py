@@ -4,10 +4,10 @@ import time
 
 from qdrant_client import QdrantClient
 
-from studeria_assistant.config import get_settings
-from studeria_assistant.embeddings import FastEmbedEmbedder
-from studeria_assistant.index import DenseIndex
-from studeria_assistant.ingest import read_chunks
+from policy_help_desk.config import get_settings
+from policy_help_desk.embeddings import FastEmbedEmbedder
+from policy_help_desk.index import DenseIndex
+from policy_help_desk.ingest import read_chunks
 
 
 def main() -> None:

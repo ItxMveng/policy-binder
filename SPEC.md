@@ -1,4 +1,4 @@
-# SPEC — Studeria Assistant : assistant documentaire fiable et évalué
+# SPEC — Guichet des règlements : assistant documentaire fiable et évalué
 
 ## Problème et coût pour une entreprise
 Dans une banque, une assurance, une ESN ou un établissement public, les règles internes (règlement intérieur, procédures, chartes, politiques RH ou informatiques) sont réparties dans des dizaines de PDF. Un collaborateur qui cherche « combien de temps ai-je pour contester une note ? » ou « ai-je le droit d'utiliser une IA générative pour ce rapport ? » ouvre plusieurs documents, demande à un collègue ou au service concerné, et obtient parfois une réponse fausse.

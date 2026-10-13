@@ -14,17 +14,17 @@ from pathlib import Path
 
 from qdrant_client import QdrantClient
 
-from studeria_assistant.bm25 import BM25Index
-from studeria_assistant.config import get_settings
-from studeria_assistant.embeddings import FastEmbedEmbedder
-from studeria_assistant.evalset import load_questions
-from studeria_assistant.evaluation import QuestionResult, score, summarize
-from studeria_assistant.hybrid import HybridRetriever
-from studeria_assistant.index import DenseIndex
-from studeria_assistant.ingest import read_chunks
-from studeria_assistant.llm import make_provider
-from studeria_assistant.rag import Assistant, Retriever
-from studeria_assistant.rerank import DEFAULT_RERANKER, FastEmbedReranker, RerankingRetriever
+from policy_help_desk.bm25 import BM25Index
+from policy_help_desk.config import get_settings
+from policy_help_desk.embeddings import FastEmbedEmbedder
+from policy_help_desk.evalset import load_questions
+from policy_help_desk.evaluation import QuestionResult, score, summarize
+from policy_help_desk.hybrid import HybridRetriever
+from policy_help_desk.index import DenseIndex
+from policy_help_desk.ingest import read_chunks
+from policy_help_desk.llm import make_provider
+from policy_help_desk.rag import Assistant, Retriever
+from policy_help_desk.rerank import DEFAULT_RERANKER, FastEmbedReranker, RerankingRetriever
 
 JUDGE_MODEL = "qwen/qwen3.8-27b"
 # Tarif public Groq de openai/gpt-oss-120b, relevé le 2026-10-12 sur

@@ -4,7 +4,7 @@
 Projet de portfolio de Francis Itoua, construit pour décrocher un stage Ingénieur IA appliquée & MLOps. Francis doit pouvoir expliquer chaque ligne en entretien : la clarté prime sur l'astuce.
 Spécification : SPEC.md · Plan : ROADMAP.md · Journal : JOURNAL.md
 
-### Contexte propre au projet (P1 — Studeria Assistant)
+### Contexte propre au projet (P1 — Guichet des règlements)
 - Problème : les collaborateurs perdent du temps à chercher dans les règlements, procédures et politiques internes ; un assistant qui invente des réponses est inutilisable en interne.
 - Données : documents institutionnels PUBLICS de l'ENIB (Bretagne INP), de l'Université de Brest (UBO) et d'IMT Atlantique — règlements intérieurs, règles de scolarité et d'examens, chartes — traités comme des « politiques internes ». Les URL officielles et la date de consultation sont dans `data/sources.yaml` ; `scripts/download_sources.py` télécharge les PDF dans `data/raw/` (jamais versionné) ; le pipeline d'ingestion les convertit.
 - Évaluation : 60 questions (40 avec réponse dans le corpus, 20 hors corpus) dans `eval/questions.jsonl`, validées par Francis. Métriques : exactitude (juge LLM + vérification des citations), précision du contexte récupéré, abstention correcte, refus injustifiés sur les questions qui ont une réponse, latence p50/p95, coût pour 1 000 questions ; base naïve (dense seul) vs version finale. Les résultats sont présentés comme exploratoires (petit jeu de test). CI : 20 questions.

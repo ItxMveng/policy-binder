@@ -1,9 +1,9 @@
 import pytest
 from pydantic import ValidationError
 
-from studeria_assistant.config import ROOT_DIR
-from studeria_assistant.evalset import EvalQuestion, check_eval_set, load_questions
-from studeria_assistant.sources import load_sources
+from policy_help_desk.config import ROOT_DIR
+from policy_help_desk.evalset import EvalQuestion, check_eval_set, load_questions
+from policy_help_desk.sources import load_sources
 
 
 def test_versioned_eval_set_is_coherent() -> None:

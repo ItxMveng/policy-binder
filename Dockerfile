@@ -8,4 +8,4 @@ COPY src ./src
 RUN uv sync --frozen --no-dev
 ENV PATH="/app/.venv/bin:$PATH" PORT=8080
 EXPOSE 8080
-CMD ["sh", "-c", "uvicorn studeria_assistant.api:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "uvicorn policy_help_desk.api:app --host 0.0.0.0 --port ${PORT}"]

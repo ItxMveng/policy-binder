@@ -5,7 +5,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, model_validator
 
-from studeria_assistant.sources import Source
+from policy_help_desk.sources import Source
 
 
 class ExpectedSource(BaseModel):

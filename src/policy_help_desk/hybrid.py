@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 from typing import Protocol
 
-from studeria_assistant.index import ScoredChunk
+from policy_help_desk.index import ScoredChunk
 
 RRF_K = 60  # constante de l'article d'origine (Cormack et al., 2009) : atténue l'écart entre rangs
 

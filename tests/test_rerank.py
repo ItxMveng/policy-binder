@@ -1,8 +1,8 @@
 from collections.abc import Sequence
 
-from studeria_assistant.index import ScoredChunk
-from studeria_assistant.ingest import Chunk
-from studeria_assistant.rerank import RerankingRetriever
+from policy_help_desk.index import ScoredChunk
+from policy_help_desk.ingest import Chunk
+from policy_help_desk.rerank import RerankingRetriever
 
 
 def _hit(chunk_id: str, text: str) -> ScoredChunk:

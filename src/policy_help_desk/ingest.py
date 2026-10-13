@@ -9,7 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from pypdf import PdfReader
 
-from studeria_assistant.sources import Source, raw_pdf_path
+from policy_help_desk.sources import Source, raw_pdf_path
 
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 

@@ -5,9 +5,9 @@ Usage : uv run python scripts/ingest.py   (après scripts/download_sources.py)
 
 from collections import Counter
 
-from studeria_assistant.config import get_settings
-from studeria_assistant.ingest import ingest_sources, write_chunks
-from studeria_assistant.sources import load_sources
+from policy_help_desk.config import get_settings
+from policy_help_desk.ingest import ingest_sources, write_chunks
+from policy_help_desk.sources import load_sources
 
 
 def main() -> None:

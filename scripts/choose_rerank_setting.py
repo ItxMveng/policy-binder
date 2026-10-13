@@ -10,15 +10,15 @@ import time
 
 from qdrant_client import QdrantClient
 
-from studeria_assistant.bm25 import BM25Index
-from studeria_assistant.config import get_settings
-from studeria_assistant.embeddings import FastEmbedEmbedder
-from studeria_assistant.evalset import load_questions
-from studeria_assistant.evaluation import hit_at_k
-from studeria_assistant.hybrid import HybridRetriever
-from studeria_assistant.index import DenseIndex
-from studeria_assistant.ingest import read_chunks
-from studeria_assistant.rerank import FastEmbedReranker, RerankingRetriever
+from policy_help_desk.bm25 import BM25Index
+from policy_help_desk.config import get_settings
+from policy_help_desk.embeddings import FastEmbedEmbedder
+from policy_help_desk.evalset import load_questions
+from policy_help_desk.evaluation import hit_at_k
+from policy_help_desk.hybrid import HybridRetriever
+from policy_help_desk.index import DenseIndex
+from policy_help_desk.ingest import read_chunks
+from policy_help_desk.rerank import FastEmbedReranker, RerankingRetriever
 
 BUDGET_MS = 3000
 SETTINGS = [(20, None), (10, None), (20, 600), (10, 600), (10, 400)]

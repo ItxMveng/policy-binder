@@ -7,10 +7,10 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from studeria_assistant.evalset import EvalQuestion
-from studeria_assistant.index import ScoredChunk
-from studeria_assistant.llm import LLMProvider
-from studeria_assistant.rag import Answer
+from policy_help_desk.evalset import EvalQuestion
+from policy_help_desk.index import ScoredChunk
+from policy_help_desk.llm import LLMProvider
+from policy_help_desk.rag import Answer
 
 Verdict = Literal["correct", "partiel", "incorrect", "abstention", "hors_corpus"]
 

@@ -7,8 +7,8 @@ la question et le passage ensemble : plus précis, plus lent, donc appliqué à 
 from collections.abc import Sequence
 from typing import Protocol
 
-from studeria_assistant.hybrid import Searcher
-from studeria_assistant.index import ScoredChunk
+from policy_help_desk.hybrid import Searcher
+from policy_help_desk.index import ScoredChunk
 
 DEFAULT_RERANKER = "BAAI/bge-reranker-v2-m3-int8"  # multilingue, Apache-2.0, 0,57 Go
 

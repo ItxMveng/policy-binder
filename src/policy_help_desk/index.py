@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
-from studeria_assistant.embeddings import Embedder
-from studeria_assistant.ingest import Chunk
+from policy_help_desk.embeddings import Embedder
+from policy_help_desk.ingest import Chunk
 
 COLLECTION = "passages"
 BATCH_SIZE = 64

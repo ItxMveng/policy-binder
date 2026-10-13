@@ -3,8 +3,8 @@ from pathlib import Path
 import httpx
 import pytest
 
-from studeria_assistant.config import ROOT_DIR
-from studeria_assistant.sources import Source, download_source, load_sources
+from policy_help_desk.config import ROOT_DIR
+from policy_help_desk.sources import Source, download_source, load_sources
 
 SOURCES_FILE = ROOT_DIR / "data" / "sources.yaml"
 

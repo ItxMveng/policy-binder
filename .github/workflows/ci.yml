@@ -24,4 +24,4 @@ jobs:
       - name: Tests
         run: uv run pytest -q
       - name: Image Docker
-        run: docker build -t studeria-assistant:ci .
+        run: docker build -t policy-help-desk:ci .

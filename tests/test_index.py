@@ -1,7 +1,7 @@
 from qdrant_client import QdrantClient
 
-from studeria_assistant.index import DenseIndex, point_id
-from studeria_assistant.ingest import Chunk
+from policy_help_desk.index import DenseIndex, point_id
+from policy_help_desk.ingest import Chunk
 from tests.conftest import HashingEmbedder
 
 CHUNKS = [

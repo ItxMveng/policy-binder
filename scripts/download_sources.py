@@ -6,8 +6,8 @@ Usage : uv run python scripts/download_sources.py
 import json
 import sys
 
-from studeria_assistant.config import get_settings
-from studeria_assistant.sources import download_source, load_sources, make_client
+from policy_help_desk.config import get_settings
+from policy_help_desk.sources import download_source, load_sources, make_client
 
 
 def main() -> int:

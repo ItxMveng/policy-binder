@@ -1,7 +1,7 @@
-from studeria_assistant.bm25 import BM25Index, tokenize
-from studeria_assistant.hybrid import HybridRetriever, reciprocal_rank_fusion
-from studeria_assistant.index import ScoredChunk
-from studeria_assistant.ingest import Chunk
+from policy_help_desk.bm25 import BM25Index, tokenize
+from policy_help_desk.hybrid import HybridRetriever, reciprocal_rank_fusion
+from policy_help_desk.index import ScoredChunk
+from policy_help_desk.ingest import Chunk
 
 
 def _chunk(chunk_id: str, text: str) -> Chunk:

@@ -10,8 +10,8 @@ import unicodedata
 from collections import Counter
 from collections.abc import Sequence
 
-from studeria_assistant.index import ScoredChunk
-from studeria_assistant.ingest import Chunk
+from policy_help_desk.index import ScoredChunk
+from policy_help_desk.ingest import Chunk
 
 # Mots-outils français fréquents : ils n'aident pas à distinguer les passages.
 _STOPWORDS_TEXT = (

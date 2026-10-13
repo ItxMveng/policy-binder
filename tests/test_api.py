@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from studeria_assistant.api import app, get_assistant
-from studeria_assistant.rag import Assistant
+from policy_help_desk.api import app, get_assistant
+from policy_help_desk.rag import Assistant
 from tests.test_rag import PASSAGES, FakeLLM, FakeRetriever
 
 client = TestClient(app)

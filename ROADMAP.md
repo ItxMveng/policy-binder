@@ -1,4 +1,4 @@
-# ROADMAP — P1 : Studeria Assistant (12 → 23 octobre 2026)
+# ROADMAP — P1 : Guichet des règlements (12 → 23 octobre 2026)
 
 ## Baseline fonctionnelle
 - [x] P1-01 Sources officielles et téléchargement — data/sources.yaml (≥ 6 documents, URL vérifiées, date de consultation), scripts/download_sources.py, data/raw/ ignoré par git, tests du chargement des sources (fait le 2026-10-11)

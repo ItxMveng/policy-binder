@@ -1,4 +1,4 @@
-# Évaluation — Studeria Assistant
+# Évaluation — Guichet des règlements
 
 > **Résultats exploratoires.** 60 questions (40 avec réponse, 20 hors corpus) sur 9 documents : chaque taux est donné avec son intervalle de confiance à 95 % (Wilson). Le jeu d'évaluation a été relu et validé par Francis le 12/10/2026 (`eval/A-VALIDER.md`), sans modification des questions : les résultats ci-dessous restent valables.
 
