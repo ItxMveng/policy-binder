@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-13 — P1-11 Traces Langfuse et protection de la démo
+- Fait : traces Langfuse de chaque question (recherche, génération, abstention) via une interface Tracer, actives seulement avec les clés ; protection de la démo : 10 questions par IP sur 10 minutes et 300 par jour, réponse 429 au-delà ; trace réelle vérifiée dans Langfuse.
+- Chiffre mesuré : première trace réelle : 11,6 s au total, dont 10,5 s de recherche (reranker sur CPU) et 1,2 s de génération (gpt-oss-120b, 1 203 tokens en entrée, 380 en sortie)
+- Décision technique : compteurs en mémoire plutôt que Redis pour la démo à une instance : exacts et gratuits, à remplacer par un stockage partagé si l'on passe à plusieurs instances.
+- Visuel disponible : aucun
+
 ## 2026-10-13 — P1-10 Interface de chat
 - Fait : interface de chat React + Vite + TypeScript : renvois [n] cliquables vers le passage utilisé et lien vers le PDF officiel ouvert à la bonne page, abstention présentée à part, thème clair/sombre, mobile ; route /sources et CORS côté API ; tests Vitest et job front en CI.
 - Chiffre mesuré : aucun (vérification de bout en bout en local : réponse correcte citant la charte des examens, page 3)
