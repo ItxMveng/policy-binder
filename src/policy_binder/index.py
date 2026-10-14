@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
+from policy_binder.config import Settings
 from policy_binder.embeddings import Embedder
 from policy_binder.ingest import Chunk
 
@@ -57,3 +58,11 @@ class DenseIndex:
             ScoredChunk(chunk=Chunk.model_validate(point.payload), score=point.score)
             for point in response.points
         ]
+
+
+def make_qdrant_client(settings: Settings) -> QdrantClient:
+    """Qdrant Cloud si une URL est configurée, sinon index embarqué sur disque (développement)."""
+    if settings.qdrant_url:
+        key = settings.qdrant_api_key.get_secret_value() if settings.qdrant_api_key else None
+        return QdrantClient(url=settings.qdrant_url, api_key=key, timeout=30)
+    return QdrantClient(path=str(settings.qdrant_path))

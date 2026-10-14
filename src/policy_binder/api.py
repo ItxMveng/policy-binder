@@ -39,21 +39,17 @@ class Question(BaseModel):
 @lru_cache(maxsize=1)
 def _build_assistant() -> Assistant:
     """Construit l'assistant une seule fois (modèle d'embeddings et index chargés au 1er appel)."""
-    from qdrant_client import QdrantClient
-
     from policy_binder.bm25 import BM25Index
     from policy_binder.embeddings import FastEmbedEmbedder
     from policy_binder.hybrid import HybridRetriever
-    from policy_binder.index import DenseIndex
+    from policy_binder.index import DenseIndex, make_qdrant_client
     from policy_binder.ingest import read_chunks
     from policy_binder.llm import make_provider
     from policy_binder.rag import Retriever
 
     settings = get_settings()
     key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
-    retriever: Retriever = DenseIndex(
-        QdrantClient(path=str(settings.qdrant_path)), FastEmbedEmbedder()
-    )
+    retriever: Retriever = DenseIndex(make_qdrant_client(settings), FastEmbedEmbedder())
     if settings.retrieval == "hybride":
         chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")
         retriever = HybridRetriever(retriever, BM25Index(chunks))

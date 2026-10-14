@@ -1,0 +1,50 @@
+name: Déploiement
+
+# Index dense sur Qdrant Cloud, puis API publiée sur un Space Hugging Face (SDK Docker).
+# Déclenchement manuel ou à chaque tag de version ; les secrets passent de GitHub au Space.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+concurrency:
+  group: deploiement
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONIOENCODING: utf-8
+      FASTEMBED_CACHE_PATH: ${{ github.workspace }}/.cache/fastembed
+      QDRANT_URL: ${{ secrets.QDRANT_URL }}
+      QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Installer les dépendances
+        run: uv sync --frozen --python 3.12
+      - uses: actions/cache@v4
+        with:
+          path: .cache/fastembed
+          key: fastembed-minilm-bge-reranker-v2-m3-int8
+
+      - name: Corpus et index dense sur Qdrant Cloud
+        run: |
+          test -n "$QDRANT_URL" || { echo "::error::Secret QDRANT_URL manquant"; exit 1; }
+          uv run python scripts/download_sources.py
+          uv run python scripts/ingest.py
+          uv run python scripts/build_index.py
+
+      - name: Publier l'API sur Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
+        run: uv run python scripts/deploy_space.py

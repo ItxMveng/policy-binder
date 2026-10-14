@@ -8,15 +8,13 @@ Usage : uv run python scripts/eval_retrieval.py
 import json
 import time
 
-from qdrant_client import QdrantClient
-
 from policy_binder.bm25 import BM25Index
 from policy_binder.config import get_settings
 from policy_binder.embeddings import FastEmbedEmbedder
 from policy_binder.evalset import load_questions
 from policy_binder.evaluation import hit_at_k, wilson
 from policy_binder.hybrid import HybridRetriever, Searcher
-from policy_binder.index import DenseIndex
+from policy_binder.index import DenseIndex, make_qdrant_client
 from policy_binder.ingest import read_chunks
 from policy_binder.rerank import FastEmbedReranker, RerankingRetriever
 
@@ -27,7 +25,7 @@ def main() -> None:
     settings = get_settings()
     root = settings.data_dir.parent
     questions = [q for q in load_questions(root / "eval" / "questions.jsonl") if q.answerable]
-    client = QdrantClient(path=str(settings.qdrant_path))
+    client = make_qdrant_client(settings)
     dense = DenseIndex(client, FastEmbedEmbedder())
     lexical = BM25Index(read_chunks(settings.data_dir / "processed" / "chunks.jsonl"))
     reranker = FastEmbedReranker()

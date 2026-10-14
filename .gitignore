@@ -14,3 +14,8 @@ data/raw/
 data/processed/
 data/index/
 eval/validation.html
+
+# Terraform : dossiers et états locaux
+infra/terraform/.terraform/
+*.tfstate
+*.tfstate.*

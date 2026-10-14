@@ -12,15 +12,13 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-from qdrant_client import QdrantClient
-
 from policy_binder.bm25 import BM25Index
 from policy_binder.config import get_settings
 from policy_binder.embeddings import FastEmbedEmbedder
 from policy_binder.evalset import load_questions
 from policy_binder.evaluation import QuestionResult, score, summarize
 from policy_binder.hybrid import HybridRetriever
-from policy_binder.index import DenseIndex
+from policy_binder.index import DenseIndex, make_qdrant_client
 from policy_binder.ingest import read_chunks
 from policy_binder.llm import make_provider
 from policy_binder.rag import Assistant, Retriever
@@ -58,7 +56,7 @@ def main() -> None:
         wanted = {line.strip() for line in lines if line.strip() and not line.startswith("#")}
         questions = [q for q in questions if q.id in wanted]
     questions = questions[: args.limit]
-    client = QdrantClient(path=str(settings.qdrant_path))
+    client = make_qdrant_client(settings)
     retriever: Retriever = DenseIndex(client, FastEmbedEmbedder())
     if args.retrieval == "hybride":
         chunks = read_chunks(settings.data_dir / "processed" / "chunks.jsonl")

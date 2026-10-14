@@ -47,3 +47,17 @@ jobs:
           npm test
       - name: Build de production
         run: npm run build
+
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Format et validation (sans compte Google Cloud)
+        run: |
+          terraform fmt -check
+          terraform init -backend=false -input=false
+          terraform validate

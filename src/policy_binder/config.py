@@ -46,6 +46,10 @@ class Settings(BaseSettings):
     def llm_ready(self) -> bool:
         return self.llm_provider == "ollama" or self.llm_api_key is not None
 
+    # Qdrant Cloud en production (URL + clé) ; sans URL, index embarqué dans data/index/qdrant.
+    qdrant_url: str | None = None
+    qdrant_api_key: SecretStr | None = None
+
     @property
     def qdrant_path(self) -> Path:
         return self.data_dir / "index" / "qdrant"

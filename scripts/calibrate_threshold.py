@@ -8,15 +8,13 @@ Aucun appel au LLM : seuls la recherche hybride et le reranker sont utilisés.
 import argparse
 import json
 
-from qdrant_client import QdrantClient
-
 from policy_binder.bm25 import BM25Index
 from policy_binder.config import get_settings
 from policy_binder.embeddings import FastEmbedEmbedder
 from policy_binder.evalset import load_questions
 from policy_binder.evaluation import choose_threshold
 from policy_binder.hybrid import HybridRetriever
-from policy_binder.index import DenseIndex
+from policy_binder.index import DenseIndex, make_qdrant_client
 from policy_binder.ingest import read_chunks
 from policy_binder.rerank import DEFAULT_RERANKER, FastEmbedReranker, RerankingRetriever
 
@@ -33,7 +31,7 @@ def main() -> None:
         settings.rerank_max_chars = args.rerank_max_chars or None
     root = settings.data_dir.parent
     questions = load_questions(root / "eval" / "calibration.jsonl")
-    client = QdrantClient(path=str(settings.qdrant_path))
+    client = make_qdrant_client(settings)
     hybrid = HybridRetriever(
         DenseIndex(client, FastEmbedEmbedder()),
         BM25Index(read_chunks(settings.data_dir / "processed" / "chunks.jsonl")),
