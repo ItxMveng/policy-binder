@@ -71,7 +71,7 @@ resource "azuread_application_federated_identity_credential" "main_branch" {
   display_name   = "github-main"
   audiences      = ["api://AzureADTokenExchange"]
   issuer         = "https://token.actions.githubusercontent.com"
-  subject        = "repo:${var.github_repository}:ref:refs/heads/main"
+  subject        = var.github_oidc_subject
 }
 
 # Droits limités au groupe de ressources de la démo.
