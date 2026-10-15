@@ -19,3 +19,5 @@ eval/validation.html
 **/.terraform/
 *.tfstate
 *.tfstate.*
+tfplan
+*.tfplan
