@@ -1,20 +1,24 @@
 name: Déploiement
 
-# Index dense sur Qdrant Cloud, puis API publiée sur un Space Hugging Face (SDK Docker).
-# Déclenchement manuel ou à chaque tag de version ; les secrets passent de GitHub au Space.
+# 1. Index dense sur Qdrant Cloud. 2. Image de l'API sur le registre GitHub (ghcr.io).
+# 3. Azure Container Apps : connexion fédérée (OIDC, aucun mot de passe stocké), secrets injectés
+#    depuis les secrets GitHub, nouvelle image, puis vérification de /health.
 on:
   workflow_dispatch:
-  push:
-    tags: ["v*"]
 
 concurrency:
   group: deploiement
   cancel-in-progress: false
 
+env:
+  IMAGE: ghcr.io/itxmveng/policy-binder
+  APP: policy-binder-api
+  RESOURCE_GROUP: rg-policy-binder
+
 jobs:
-  deploy:
+  index:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     env:
       PYTHONIOENCODING: utf-8
       FASTEMBED_CACHE_PATH: ${{ github.workspace }}/.cache/fastembed
@@ -25,13 +29,11 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-      - name: Installer les dépendances
-        run: uv sync --frozen --python 3.12
+      - run: uv sync --frozen --python 3.12
       - uses: actions/cache@v4
         with:
           path: .cache/fastembed
           key: fastembed-minilm-bge-reranker-v2-m3-int8
-
       - name: Corpus et index dense sur Qdrant Cloud
         run: |
           test -n "$QDRANT_URL" || { echo "::error::Secret QDRANT_URL manquant"; exit 1; }
@@ -39,12 +41,68 @@ jobs:
           uv run python scripts/ingest.py
           uv run python scripts/build_index.py
 
-      - name: Publier l'API sur Hugging Face Spaces
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE }}:${{ github.sha }},${{ env.IMAGE }}:latest
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+
+  deploy:
+    needs: [index, image]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Secrets d'exécution (depuis les secrets GitHub)
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_SPACE: ${{ vars.HF_SPACE }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          QDRANT_URL: ${{ secrets.QDRANT_URL }}
+          QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
           LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
           LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-          ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
-        run: uv run python scripts/deploy_space.py
+        run: |
+          az containerapp secret set -n "$APP" -g "$RESOURCE_GROUP" --secrets \
+            llm-api-key="$LLM_API_KEY" qdrant-url="$QDRANT_URL" qdrant-api-key="$QDRANT_API_KEY" \
+            langfuse-public-key="$LANGFUSE_PUBLIC_KEY" langfuse-secret-key="$LANGFUSE_SECRET_KEY" \
+            --output none
+      - name: Nouvelle image et configuration
+        run: |
+          az containerapp update -n "$APP" -g "$RESOURCE_GROUP" \
+            --image "$IMAGE:${{ github.sha }}" \
+            --set-env-vars \
+              LLM_API_KEY=secretref:llm-api-key QDRANT_URL=secretref:qdrant-url \
+              QDRANT_API_KEY=secretref:qdrant-api-key \
+              LANGFUSE_PUBLIC_KEY=secretref:langfuse-public-key \
+              LANGFUSE_SECRET_KEY=secretref:langfuse-secret-key \
+              ALLOWED_ORIGINS='${{ vars.ALLOWED_ORIGINS }}' \
+            --output none
+      - name: Vérification de /health
+        run: |
+          FQDN=$(az containerapp show -n "$APP" -g "$RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)
+          echo "API : https://$FQDN"
+          for i in $(seq 1 30); do
+            curl -fsS -m 20 "https://$FQDN/health" && exit 0
+            sleep 10
+          done
+          echo "::error::/health ne répond pas"; exit 1

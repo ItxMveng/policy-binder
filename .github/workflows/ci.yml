@@ -50,13 +50,16 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dossier: [infra/azure, infra/terraform]
     defaults:
       run:
-        working-directory: infra/terraform
+        working-directory: ${{ matrix.dossier }}
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
-      - name: Format et validation (sans compte Google Cloud)
+      - name: Format et validation (sans compte cloud)
         run: |
           terraform fmt -check
           terraform init -backend=false -input=false

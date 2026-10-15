@@ -16,6 +16,6 @@ data/index/
 eval/validation.html
 
 # Terraform : dossiers et états locaux
-infra/terraform/.terraform/
+**/.terraform/
 *.tfstate
 *.tfstate.*
