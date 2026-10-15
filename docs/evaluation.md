@@ -2,6 +2,22 @@
 
 > **Résultats exploratoires.** 60 questions (40 avec réponse, 20 hors corpus) sur 9 documents : chaque taux est donné avec son intervalle de confiance à 95 % (Wilson). Le jeu d'évaluation a été relu et validé par Francis le 12/10/2026 (`eval/A-VALIDER.md`), sans modification des questions : les résultats ci-dessous restent valables.
 
+## Synthèse
+Configuration retenue (recherche hybride dense + BM25, reranker, seuil d'abstention calibré), comparée à la base naïve (recherche dense seule), sur les 60 mêmes questions :
+- **Exactitude : 70 %** (28/40, IC 55–82 %) contre 42,5 % (IC 29–58 %).
+- **Refus injustifiés : 5 %** (2/40) contre 37,5 %, avec **0 réponse incorrecte** sur 40.
+- **Abstention correcte : 20/20** questions hors corpus, dont 15 décidées sans appel au LLM.
+
+Le prix : **10,5 s de latence médiane** sur un CPU de portable, presque entièrement due au reranker (traces Langfuse : 10,5 s de recherche, 1,2 s de génération).
+
+## Jeux de questions
+- **Jeu de test** (`eval/questions.jsonl`) : 60 questions écrites comme un utilisateur les poserait, à partir des 9 documents.
+  - 40 ont une réponse : 8 sur ENIB / Bretagne INP, 25 sur l'Université de Brest, 7 sur IMT Atlantique / IMT.
+  - 20 sont hors corpus : réponse absente des documents, comme la CVEC ou un loyer CROUS ; chaque thème a été vérifié par recherche dans le texte extrait.
+  - Relu et validé par Francis le 12/10/2026 ; aucune question n'a été modifiée après les premières mesures.
+- **Jeu de calibration** (`eval/calibration.jsonl`) : 24 autres questions (12 avec réponse, 12 hors corpus), sans aucune question commune avec le jeu de test. Il sert uniquement à fixer le seuil d'abstention et le réglage du reranker.
+- **Sous-ensemble CI** (`eval/ci_subset.txt`) : 20 questions du jeu de test (une sur trois, règle fixe), évaluées en CI à chaque changement.
+
 ## Protocole
 - **Jeu de test** : `eval/questions.jsonl`. Chaque question avec réponse a une réponse de référence, la page attendue et un extrait vérifié sur le PDF (`scripts/check_eval_set.py`, 40/40).
 - **Exécution** : `uv run python scripts/run_eval.py <nom>` → `eval/results/<nom>.json` (synthèse) et `<nom>-details.jsonl` (réponse, verdict et justification pour chaque question).
@@ -54,7 +70,7 @@ Sur les 40 questions avec réponse, 23 ne sont pas jugées « correctes » :
 - **15 refus injustifiés.**
   - Dans **12 cas**, la page qui contient la réponse n'était pas parmi les 5 passages récupérés, alors que le bon document l'était dans 11 de ces 12 cas (contexte document : 97,5 %). Exemples : q08 (« 15 minutes avant l'épreuve »), q25 (« 5 jours ouvrés »), q29 (« trois jours ouvrés »). Ce sont des détails précis, chiffrés, que la recherche dense manque.
   - Dans **3 cas** (q03, q19, q30), le modèle s'est abstenu alors que le passage utile était fourni : la consigne d'abstention le rend trop prudent quand la formulation de la question diffère de celle du texte.
-- **6 réponses partielles** : souvent justes mais incomplètes (q12 : les 48 h sans l'ENT ; q31 : le prêt d'un mois sans le cas des livres TOEIC). Quelques verdicts « partiel » semblent sévères : à vérifier lors de la validation du jeu.
+- **6 réponses partielles** : souvent justes mais incomplètes (q12 : les 48 h sans l'ENT ; q31 : le prêt d'un mois sans le cas des livres TOEIC). Quelques verdicts « partiel » semblent sévères (q12, q31) : le juge n'a pas encore été relu sur un échantillon.
 - **2 réponses incorrectes**, toutes deux avec la page attendue absente du contexte :
   - q38 : le modèle autorise la redirection de la messagerie vers Gmail en s'appuyant sur une section voisine, alors que la règle (p. 14) l'interdit ;
   - q39 : il donne une règle de chiffrement générale au lieu de celle de l'informatique nomade.
@@ -104,7 +120,35 @@ Sur les 40 questions avec réponse, 23 ne sont pas jugées « correctes » :
 2. un reranker plus petit et multilingue ;
 3. un service de reranking hébergé.
 
+## Évaluation en continu (CI)
+- À chaque changement du code, des scripts ou du jeu de questions, GitHub Actions télécharge le corpus, reconstruit l'index et évalue les 20 questions du sous-ensemble avec la configuration retenue.
+- Seuils bloquants (`eval/ci_gate.json`), fixés avant la première exécution :
+  - au moins 11/14 réponses correctes ou partielles ;
+  - 6/6 abstentions correctes ;
+  - au plus 1 réponse incorrecte ;
+  - au plus 3 refus injustifiés.
+
+  La base naïve (8/14) et l'hybride seul (7/14, 2 réponses incorrectes) auraient été bloqués.
+- Premier passage en CI avec la clé réelle (13/10/2026) : 13/14 correct ou partiel, 6/6 abstentions, 0 réponse incorrecte, 1 refus, donc seuils respectés. Un essai local du même sous-ensemble avait donné 12/14 avec 1 réponse incorrecte (q22). Cet écart illustre la variabilité du LLM et du juge, que la marge des seuils absorbe.
+- À chaque tag de version (`v*`), les 60 questions sont évaluées et les résultats publiés en artefact.
+
+## Reproduire
+```bash
+uv run python scripts/download_sources.py   # 9 PDF officiels → data/raw/
+uv run python scripts/check_eval_set.py     # extraits de référence retrouvés sur la bonne page
+uv run python scripts/ingest.py             # passages → data/processed/chunks.jsonl
+uv run python scripts/build_index.py        # index dense (local ou Qdrant Cloud si QDRANT_URL)
+uv run python scripts/eval_retrieval.py     # recherche seule : dense, BM25, hybride, reranker
+uv run python scripts/run_eval.py base --retrieval dense
+uv run python scripts/run_eval.py finale --retrieval hybride --rerank --min-score -2.362
+uv run python scripts/check_gate.py eval/results/finale.json
+```
+Une clé Groq (`LLM_API_KEY`) est nécessaire pour les deux évaluations de bout en bout ; l'offre gratuite limite à environ une évaluation complète des 60 questions par jour.
+
 ## Limites
 - 60 questions : les intervalles sont larges, seuls les écarts importants seront interprétables.
 - Le juge est lui-même un LLM : ses verdicts « partiel » / « incorrect » doivent être relus sur un échantillon.
-- Latence mesurée depuis un portable vers une API gratuite partagée : elle n'est pas représentative d'un déploiement en production.
+- Latence mesurée depuis un portable vers une API gratuite partagée : elle n'est pas représentative d'un déploiement en production. La latence sur l'hébergement public sera mesurée au déploiement.
+- La décision d'adopter le réglage complet du reranker a été prise après avoir vu le jeu de test (voir P1-08) ; un nouveau jeu de questions, jamais vu, confirmerait le gain.
+- La référence de q22 est probablement incomplète : le guide prévoit 3 semaines en règle générale et 15 jours en cas de force majeure, et seule la première règle y figure.
+- Corpus de 9 documents publics d'établissements d'enseignement : il sert de substitut à des politiques internes d'entreprise, plus volumineuses et plus hétérogènes.

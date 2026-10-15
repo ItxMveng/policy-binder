@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-16 — P1-13 Rapport docs/evaluation.md
+- Fait : rapport d'évaluation complet dans docs/evaluation.md : synthèse, jeux de questions, protocole, résultats des trois configurations avec intervalles de confiance, analyse des erreurs, évaluation en CI, commandes de reproduction et limites ; répartition des questions par établissement corrigée après recomptage.
+- Chiffre mesuré : version finale vs base naïve : exactitude 70 % (IC 55–82 %) vs 42,5 % (IC 29–58 %), refus injustifiés 5 % vs 37,5 %, 0 réponse incorrecte, abstention hors corpus 20/20 ; latence médiane 10,5 s sur CPU
+- Décision technique : montrer la démarche et ce qui n'a pas marché plutôt qu'un seul tableau final : les chiffres sont plus crédibles, et les limites sont écrites avant qu'on les demande.
+- Visuel disponible : aucun
+
 ## 2026-10-13 — P1-11 Traces Langfuse et protection de la démo
 - Fait : traces Langfuse de chaque question (recherche, génération, abstention) via une interface Tracer, actives seulement avec les clés ; protection de la démo : 10 questions par IP sur 10 minutes et 300 par jour, réponse 429 au-delà ; trace réelle vérifiée dans Langfuse.
 - Chiffre mesuré : première trace réelle : 11,6 s au total, dont 10,5 s de recherche (reranker sur CPU) et 1,2 s de génération (gpt-oss-120b, 1 203 tokens en entrée, 380 en sortie)
