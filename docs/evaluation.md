@@ -131,6 +131,14 @@ Sur les 40 questions avec réponse, 23 ne sont pas jugées « correctes » :
   La base naïve (8/14) et l'hybride seul (7/14, 2 réponses incorrectes) auraient été bloqués.
 - Premier passage en CI avec la clé réelle (13/10/2026) : 13/14 correct ou partiel, 6/6 abstentions, 0 réponse incorrecte, 1 refus, donc seuils respectés. Un essai local du même sous-ensemble avait donné 12/14 avec 1 réponse incorrecte (q22). Cet écart illustre la variabilité du LLM et du juge, que la marge des seuils absorbe.
 - À chaque tag de version (`v*`), les 60 questions sont évaluées et les résultats publiés en artefact.
+- **Évaluation complète du tag v1.0.0** (16/10/2026, en CI, `eval/results/v1.0.0.json`), même configuration que la version finale :
+  - exactitude 77,5 % (31/40, IC 62–88 %) ;
+  - correct ou partiel 95 % ;
+  - 0 réponse incorrecte ;
+  - 2 refus injustifiés ;
+  - abstention 20/20.
+
+  Seule l'exactitude stricte varie : 70 % lors de la mesure du 13/10, 77,5 % ici, ce qui reste dans la marge d'incertitude et reflète la variabilité du LLM et du juge. Le chiffre de référence retenu est le plus prudent (70 %). La latence p50 vaut 13,0 s sur la machine GitHub, plus lente que le portable.
 
 ## Reproduire
 ```bash
