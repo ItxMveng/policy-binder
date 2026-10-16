@@ -18,7 +18,7 @@ app = FastAPI(title="Le Classeur", version=__version__)
 # Le front (Vite en local, Vercel en production) appelle l'API depuis une autre origine.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=get_settings().allowed_origins,
+    allow_origins=get_settings().cors_origins,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )

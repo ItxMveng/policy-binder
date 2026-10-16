@@ -15,7 +15,7 @@ variable "image" {
 }
 
 variable "allowed_origins" {
-  description = "Origines autorisées (CORS), au format JSON : [\"https://<front>.vercel.app\"]."
+  description = "Origines autorisées (CORS), séparées par des virgules : https://<front>.vercel.app,http://localhost:5173."
   type        = string
 }
 

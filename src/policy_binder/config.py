@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     llm_model: str = "openai/gpt-oss-120b"
     llm_api_key: SecretStr | None = None
     top_k: int = 5
-    # Origines autorisées à appeler l'API depuis un navigateur (CORS). Variable d'environnement
-    # ALLOWED_ORIGINS au format JSON, par exemple ["https://mon-front.vercel.app"].
-    allowed_origins: list[str] = ["http://localhost:5173"]
+    # Origines autorisées à appeler l'API depuis un navigateur (CORS), séparées par des virgules :
+    # ALLOWED_ORIGINS=https://policy-binder.vercel.app,http://localhost:5173
+    allowed_origins: str = "http://localhost:5173"
     # "hybride" (dense + BM25, retenu après mesure, voir docs/evaluation.md) ou "dense".
     retrieval: str = "hybride"
     # Reranking : réglage complet (20 candidats, passages entiers), le seul dont le gain est mesuré
@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     langfuse_public_key: str | None = None
     langfuse_secret_key: SecretStr | None = None
     langfuse_host: str = "https://cloud.langfuse.com"
+
+    @property
+    def cors_origins(self) -> list[str]:
+        return [origin.strip() for origin in self.allowed_origins.split(",") if origin.strip()]
 
     @property
     def llm_ready(self) -> bool:

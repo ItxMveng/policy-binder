@@ -73,3 +73,10 @@ def test_ask_returns_429_when_limit_reached(monkeypatch: pytest.MonkeyPatch) -> 
         app.dependency_overrides.clear()
     assert second.status_code == 429
     assert "réessayez" in second.json()["detail"]
+
+
+def test_cors_origins_are_comma_separated(monkeypatch: pytest.MonkeyPatch) -> None:
+    from policy_binder.config import Settings
+
+    monkeypatch.setenv("ALLOWED_ORIGINS", " https://a.vercel.app , http://localhost:5173,")
+    assert Settings().cors_origins == ["https://a.vercel.app", "http://localhost:5173"]
