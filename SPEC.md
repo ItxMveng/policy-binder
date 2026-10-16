@@ -32,7 +32,7 @@ flowchart LR
       EMB --> QD[("Qdrant")]
       CH --> BM["Index BM25"]
     end
-    subgraph Service["API FastAPI (Cloud Run)"]
+    subgraph Service["API FastAPI (Azure Container Apps)"]
       Q["POST /ask"] --> RET["Recherche hybride<br/>dense + BM25"]
       RET --> RR["Reranking"]
       RR --> AB{"Passages<br/>pertinents ?"}
@@ -69,7 +69,7 @@ Les PDF ne sont pas versionnés (`data/raw/` est dans `.gitignore`) : le dépôt
 ## Definition of Done
 1. Dépôt public, README « étude de cas » (Problème → Approche → Architecture → Résultats mesurés → Démo GIF + URL → Lancer en local en 3 commandes → Limites et suite).
 2. Tests et CI verts ; évaluation sur 20 questions en CI, bloquante sous le seuil ; évaluation complète sur tag.
-3. API sur Cloud Run via Terraform, front sur Vercel, URL publique fonctionnelle.
+3. API déployée via Terraform, front sur Vercel, URL publique fonctionnelle. Cible initiale : Cloud Run ; hébergement réel : Azure Container Apps (Azure for Students), faute de compte de facturation Google Cloud — le Terraform Cloud Run reste prêt et validé en CI (décision du 16/10/2026).
 4. `docs/evaluation.md` : protocole, jeu de test, résultats, comparaison avec la base naïve.
 5. `docs/explications/` : une fiche par ticket.
 6. JOURNAL.md : entrée « LIVRÉ » avec les 3 chiffres clés et l'URL de démo.

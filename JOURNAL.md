@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-16 — P1-12 Déploiement
+- Fait : déploiement public : API sur Azure Container Apps (Terraform, connexion GitHub sans mot de passe par OIDC, image publique sur ghcr.io sans texte des règlements), index sur Qdrant Cloud, front sur Vercel (https://policy-binder.vercel.app) ; Terraform Cloud Run conservé et validé en CI.
+- Chiffre mesuré : latence de l'API publique : médiane 8,2 s, maximum 8,6 s sur 6 questions (environ 12,5 s pour la première question après mise à zéro) — reranker gardé, sous le seuil de 15 s fixé avant la mesure
+- Décision technique : Azure Container Apps au lieu de Cloud Run : Cloud Run exige un compte de facturation et Hugging Face un abonnement payant pour les Spaces Docker ; l'infrastructure reste décrite en Terraform pour les deux clouds.
+- Visuel disponible : aucun
+
 ## 2026-10-16 — P1-13 Rapport docs/evaluation.md
 - Fait : rapport d'évaluation complet dans docs/evaluation.md : synthèse, jeux de questions, protocole, résultats des trois configurations avec intervalles de confiance, analyse des erreurs, évaluation en CI, commandes de reproduction et limites ; répartition des questions par établissement corrigée après recomptage.
 - Chiffre mesuré : version finale vs base naïve : exactitude 70 % (IC 55–82 %) vs 42,5 % (IC 29–58 %), refus injustifiés 5 % vs 37,5 %, 0 réponse incorrecte, abstention hors corpus 20/20 ; latence médiane 10,5 s sur CPU
