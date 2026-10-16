@@ -20,4 +20,4 @@
 - [x] P1-11 Traces Langfuse et protection de la démo — traces de chaque requête (latence, tokens), limite par IP et quota quotidien (fait le 2026-10-13)
 - [x] P1-12 Déploiement — Terraform + Azure Container Apps (Cloud Run prêt en Terraform) + Qdrant Cloud + Vercel, URL publique fonctionnelle (fait le 2026-10-16)
 - [x] P1-13 Rapport docs/evaluation.md — protocole, jeu de test, résultats, comparaison base naïve vs version finale (fait le 2026-10-16)
-- [ ] P1-14 README étude de cas + GIF de démo
+- [x] P1-14 README étude de cas + GIF de démo (fait le 2026-10-16)

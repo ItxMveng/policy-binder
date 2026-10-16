@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-16 — P1-14 README étude de cas + GIF de démo (fait le 2026-10-16)
+- Fait : README réécrit au format étude de cas (problème et coût, approche, architecture, résultats mesurés, démo, lancement local en 3 commandes, limites) et GIF de démo enregistré sur le site public (réponse citée puis abstention) ; scripts/prepare.py pour préparer le corpus et l'index en une commande.
+- Chiffre mesuré : aucun nouveau chiffre (le README reprend les mesures publiées dans docs/evaluation.md et la latence en ligne du 16/10)
+- Décision technique : un GIF enregistré par script sur le vrai site plutôt qu'une maquette, montrant aussi l'abstention, qui est la proposition de valeur du projet.
+- Visuel disponible : docs/media/demo.gif
+
 ## 2026-10-16 — P1-12 Déploiement
 - Fait : déploiement public : API sur Azure Container Apps (Terraform, connexion GitHub sans mot de passe par OIDC, image publique sur ghcr.io sans texte des règlements), index sur Qdrant Cloud, front sur Vercel (https://policy-binder.vercel.app) ; Terraform Cloud Run conservé et validé en CI.
 - Chiffre mesuré : latence de l'API publique : médiane 8,2 s, maximum 8,6 s sur 6 questions (environ 12,5 s pour la première question après mise à zéro) — reranker gardé, sous le seuil de 15 s fixé avant la mesure
