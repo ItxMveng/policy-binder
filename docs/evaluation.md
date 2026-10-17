@@ -140,6 +140,36 @@ Sur les 40 questions avec réponse, 23 ne sont pas jugées « correctes » :
 
   Seule l'exactitude stricte varie : 70 % lors de la mesure du 13/10, 77,5 % ici, ce qui reste dans la marge d'incertitude et reflète la variabilité du LLM et du juge. Le chiffre de référence retenu est le plus prudent (70 %). La latence p50 vaut 13,0 s sur la machine GitHub, plus lente que le portable.
 
+## Questions sur plusieurs établissements (P1-15)
+Signalé en testant le site : « Quelle est la moyenne pour que je réussisse mon année scolaire à l'UBO et à l'ENIB ? » donnait une abstention totale, alors que le règlement de l'UBO y répond. Le reranker note la question entière : la mention de deux établissements faisait tomber la bonne page de −1,86 à −3,83, sous le seuil (−2,36). Correction et choix détaillés dans [P1-15](explications/P1-15.md).
+
+**Jeu dédié** (`eval/questions_composees.jsonl`) : 8 questions sur deux ou trois établissements, soit 17 parties. 10 parties ont une réponse dans les documents, 7 n'en ont pas, et chaque fait a été vérifié dans les PDF. Notation partie par partie par règles (`scripts/eval_composees.py`), puis relecture à la main.
+
+| | Avant (v1.0.0) | Après |
+|---|---|---|
+| Parties avec réponse, répondues et citées | 1/10 | **8/10** |
+| Parties avec réponse, refusées | 8/10 | 1/10 |
+| Parties absentes des documents, signalées comme telles | 7/7 | **7/7** |
+| Parties absentes pour lesquelles une réponse est affirmée | 0 | **0** |
+| Latence médiane (local, CPU) | 11,4 s | 10,7 s |
+
+Relecture des deux parties restantes :
+- c06 (téléphone en examen à l'UBO) : le fond est juste, mais la réponse ajoute que le téléphone est « remis au surveillant », alors que la charte dit qu'il est déposé à l'entrée ;
+- c02 (vapotage à l'ENIB) : la partie est refusée aussi en question simple, car le règlement parle de « cigarette électronique » et la page n'arrive pas parmi les candidats.
+
+**Non-régression sur les 60 questions** (la détection d'abstention change pour toutes les questions) :
+
+| | Référence (P1-08) | Tag v1.0.0 (CI) | Premier essai | **Version retenue** |
+|---|---|---|---|---|
+| Exactitude | 70,0 % | 77,5 % | 70,0 % | **75,0 % (IC 60–86 %)** |
+| Correct ou partiel | 95,0 % | 95,0 % | 90,0 % | **95,0 %** |
+| Réponses incorrectes (sur 40) | 0 | 0 | 1 | **0** |
+| Refus injustifiés (sur 40) | 2 | 2 | 3 | **2** |
+| Abstention hors corpus | 20/20 | 20/20 | 20/20 | **20/20** |
+| Latence p50 / p95 | 10,5 s / 11,9 s (local) | 13,0 s / 14,5 s (CI) | 11,8 s / 13,8 s (local) | **11,2 s / 15,8 s** (local) |
+
+Le premier essai envoyait la consigne de réponse partielle à toutes les questions. q12 (UBO seul) a alors répondu « je ne trouve pas … pour UBO » au lieu des 48 heures qu'elle trouvait jusque-là. La version retenue réserve cette consigne aux questions qui citent plusieurs établissements ; les questions simples gardent leur recherche, leur seuil et leur consigne. Les écarts d'exactitude entre exécutions (70 à 77,5 %) restent dans les intervalles de confiance, et les deux questions qui changent de verdict passent de « partiel » à « correct ». Résultats : `eval/results/plusieurs-etablissements*.json(l)` (essai1 = premier essai) et `eval/results/composees-*.json`.
+
 ## Reproduire
 ```bash
 uv run python scripts/download_sources.py   # 9 PDF officiels → data/raw/
@@ -154,6 +184,7 @@ uv run python scripts/check_gate.py eval/results/finale.json
 Une clé Groq (`LLM_API_KEY`) est nécessaire pour les deux évaluations de bout en bout ; l'offre gratuite limite à environ une évaluation complète des 60 questions par jour.
 
 ## Limites
+- Questions sur plusieurs sujets : seuls les établissements déclenchent la recherche par partie ; « vitesse et animaux » n'est pas découpée. Le jeu de questions composées (8 questions) est noté par règles, donc exploratoire.
 - 60 questions : les intervalles sont larges, seuls les écarts importants seront interprétables.
 - Le juge est lui-même un LLM : ses verdicts « partiel » / « incorrect » doivent être relus sur un échantillon.
 - Latence mesurée depuis un portable vers une API gratuite partagée : elle n'est pas représentative d'un déploiement en production. La latence sur l'hébergement public sera mesurée au déploiement.

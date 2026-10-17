@@ -21,3 +21,6 @@
 - [x] P1-12 Déploiement — Terraform + Azure Container Apps (Cloud Run prêt en Terraform) + Qdrant Cloud + Vercel, URL publique fonctionnelle (fait le 2026-10-16)
 - [x] P1-13 Rapport docs/evaluation.md — protocole, jeu de test, résultats, comparaison base naïve vs version finale (fait le 2026-10-16)
 - [x] P1-14 README étude de cas + GIF de démo (fait le 2026-10-16)
+
+## Après la mise en ligne
+- [x] P1-15 Questions sur plusieurs établissements — réponse partie par partie, partie absente des documents signalée (fait le 2026-10-17)

@@ -1,0 +1,233 @@
+{
+  "synthese": {
+    "questions": 8,
+    "parties_avec_reponse": 10,
+    "repondues": 1,
+    "refusees": 8,
+    "autres": 1,
+    "parties_absentes": 7,
+    "signalees": 7,
+    "affirmees": 0,
+    "latence_mediane_ms": 11371
+  },
+  "details": [
+    {
+      "id": "c01",
+      "question": "Quelle est la moyenne pour que je réussisse mon année scolaire à l'UBO et à l'ENIB ?",
+      "reponse": "Je ne trouve pas cette information dans les documents.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 10874,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "trouve",
+          "evidence": [
+            "10/20",
+            "10 sur 20",
+            "moyenne générale"
+          ],
+          "source": "ubo-regime-etudes-licence-deg-2024",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "ENIB",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c02",
+      "question": "Peut-on vapoter dans les locaux de l'ENIB et d'IMT Atlantique ?",
+      "reponse": "À IMT Atlantique, il est interdit de fumer et de vapoter dans tous les locaux de l’école, sauf dans les espaces spécialement aménagés à cet effet [1][2]. Aucun des passages fournis ne précise la règle concernant le vapotage dans les locaux de l’ENIB [3]. Je ne trouve pas cette information dans les documents pour l’ENIB.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 11720,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "cigarette électronique"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit"
+          ],
+          "source": "imt-atlantique-reglement-interieur-2024",
+          "resultat": "refusee"
+        }
+      ]
+    },
+    {
+      "id": "c03",
+      "question": "À quelle vitesse peut-on rouler sur le campus de l'ENIB et sur celui d'IMT Atlantique ?",
+      "reponse": "Sur le campus d’IMT Atlantique, la vitesse maximale autorisée est de 30 km/h [1].  \nAucune information concernant la vitesse maximale autorisée sur le campus de l’ENIB n’est fournie dans les documents.",
+      "abstention": false,
+      "sources_citees": [
+        "imt-atlantique-reglement-interieur-2024"
+      ],
+      "latence_ms": 11778,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "au pas"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "autre"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "trouve",
+          "evidence": [
+            "30"
+          ],
+          "source": "imt-atlantique-reglement-interieur-2024",
+          "resultat": "repondue"
+        }
+      ]
+    },
+    {
+      "id": "c04",
+      "question": "Puis-je venir avec mon chien sur le campus de l'ENIB et d'IMT Atlantique ?",
+      "reponse": "Je ne trouve pas cette information dans les documents.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 10095,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "laisse"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c05",
+      "question": "Combien coûtent les droits d'inscription à l'ENIB et à l'UBO ?",
+      "reponse": "Le droit d’inscription à l’ENIB est fixé à 628 € pour l’année universitaire 2025‑2026 [1]. Je ne trouve pas cette information dans les documents concernant le montant du droit d’inscription à l’UBO.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 10875,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "628"
+          ],
+          "source": "enib-droits-inscription-2025",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "UBO",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c06",
+      "question": "Ai-je le droit de garder mon téléphone portable pendant un examen à l'UBO et à IMT Atlantique ?",
+      "reponse": "Non, à l’Université de Bretagne Occidentale le téléphone portable doit être éteint et ne peut pas rester dans la salle d’examen, sous peine de fraude [4][3]. Les passages fournis concernant l’IMT ne traitent que du raccordement temporaire d’un appareil aux réseaux du campus, mais ne précisent pas les règles d’usage pendant un examen [2]. Je ne trouve pas cette information dans les documents pour IMT Atlantique.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 11371,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "pas autorisé",
+            "non autorisé",
+            "ne doit",
+            "n'est pas",
+            "n’est pas",
+            "non"
+          ],
+          "source": "ubo-charte-examens",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c07",
+      "question": "Combien coûte le stationnement sur le parking de l'UBO et d'IMT Atlantique ?",
+      "reponse": "Je ne trouve pas cette information dans les documents.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 9897,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "absent",
+          "resultat": "signalee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c08",
+      "question": "Est-il interdit de vapoter à l'UBO, à l'ENIB et à IMT Atlantique ?",
+      "reponse": "À IMT Atlantique, il est interdit de fumer et de vapoter dans tous les locaux de l’école, y compris les bureaux individuels et les véhicules de service [1][2].  \nÀ l’ENIB, le règlement précise que fumer ou vapoter est interdit à bord des véhicules appartenant à l’établissement [3].  \nJe ne trouve pas cette information dans les documents concernant l’Université de Brest (UBO).",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 11728,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "absent",
+          "resultat": "signalee"
+        },
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "oui"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "oui"
+          ],
+          "source": "imt-atlantique-reglement-interieur-2024",
+          "resultat": "refusee"
+        }
+      ]
+    }
+  ]
+}

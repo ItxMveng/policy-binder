@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-17 — P1-15 Questions sur plusieurs établissements
+- Fait : les questions qui citent plusieurs établissements sont cherchées établissement par établissement (candidats réservés, reranker sur le sujet seul, seuil inchangé) ; réponse partie par partie avec mention explicite de la partie absente des documents ; jeu de 8 questions composées et script de notation ; interface : avertissement de réponse partielle.
+- Chiffre mesuré : questions composées : 8 parties sur 10 répondues et citées contre 1 sur 10 avant, 7/7 parties absentes signalées, 0 affirmée ; sur les 60 questions, pas de régression : exactitude 75 % (IC 60–86 %), 0 réponse incorrecte, 2 refus sur 40, 20/20 abstentions
+- Décision technique : une règle déterministe sur les établissements cités plutôt qu'un découpage par LLM : les questions simples gardent recherche, seuil et consigne, sans appel en plus ; un premier essai qui envoyait la consigne partielle à toutes les questions a fait régresser q12 et a été corrigé.
+- Visuel disponible : aucun
+
 ## 2026-10-16 — P1-14 README étude de cas + GIF de démo (fait le 2026-10-16)
 - Fait : README réécrit au format étude de cas (problème et coût, approche, architecture, résultats mesurés, démo, lancement local en 3 commandes, limites) et GIF de démo enregistré sur le site public (réponse citée puis abstention) ; scripts/prepare.py pour préparer le corpus et l'index en une commande.
 - Chiffre mesuré : aucun nouveau chiffre (le README reprend les mesures publiées dans docs/evaluation.md et la latence en ligne du 16/10)

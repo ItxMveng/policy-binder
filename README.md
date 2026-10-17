@@ -23,6 +23,7 @@ Un assistant conversationnel peut réduire ce coût, mais **un assistant qui inv
 - **Abstention à deux niveaux** :
   - un seuil sur le score du reranker, calibré sur un jeu de questions séparé, s'abstient sans appeler le LLM ;
   - le LLM s'abstient aussi si les passages ne suffisent pas.
+- **Questions sur plusieurs établissements** (« … à l'UBO et à l'ENIB ? ») : candidats réservés à chaque établissement, réponse partie par partie, et mention explicite de la partie absente des documents. Sur 8 questions composées, 8 parties sur 10 sont répondues avec leur citation (1 sur 10 avant), et les 7 parties absentes des documents sont signalées comme telles.
 - **Évaluation** : 60 questions écrites comme un utilisateur et validées à la main (40 avec réponse, 20 hors corpus), un juge LLM d'une autre famille de modèles et des intervalles de confiance. Un sous-ensemble de 20 questions tourne en CI et bloque sous des seuils fixés à l'avance.
 - **Production** :
   - API FastAPI conteneurisée sur Azure Container Apps (Terraform, déploiement GitHub Actions sans mot de passe par OIDC), index sur Qdrant Cloud, interface React sur Vercel ;
@@ -84,6 +85,7 @@ Puis `cd frontend && npm install && npm run dev` pour l'interface, sur http://lo
 - **Latence** de 8 s sur CPU, à cause du reranker. Pistes à mesurer : GPU, reranker plus petit, passages plus courts. Un réglage « rapide » testé (passages tronqués) faisait perdre tout le gain de qualité.
 - **Jeu d'évaluation modeste** (60 questions sur 9 documents publics) ; un jeu jamais vu, idéalement de vraies questions d'utilisateurs, confirmerait les chiffres. Le passage au réglage complet du reranker a été décidé après avoir vu le jeu de test (voir le rapport).
 - **Hébergement** : Azure Container Apps (crédits étudiants) au lieu de Google Cloud Run, faute de compte de facturation. Le Terraform Cloud Run est prêt et validé en CI (`infra/terraform`).
+- **Questions à plusieurs sujets** : seuls les établissements déclenchent la recherche partie par partie ; « vitesse et animaux » n'est pas découpée.
 - **Limites de la démo en mémoire**, sur une seule instance ; un stockage partagé (Redis) serait nécessaire pour monter en charge.
 - **Suite** :
   - relire un échantillon des verdicts du juge ;

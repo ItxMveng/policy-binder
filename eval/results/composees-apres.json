@@ -1,0 +1,253 @@
+{
+  "synthese": {
+    "questions": 8,
+    "parties_avec_reponse": 10,
+    "repondues": 8,
+    "refusees": 1,
+    "autres": 1,
+    "parties_absentes": 7,
+    "signalees": 7,
+    "affirmees": 0,
+    "latence_mediane_ms": 10680
+  },
+  "details": [
+    {
+      "id": "c01",
+      "question": "Quelle est la moyenne pour que je réussisse mon année scolaire à l'UBO et à l'ENIB ?",
+      "reponse": "**UBO** : il faut obtenir la moyenne générale de l’année, c’est‑à‑dire au moins 10/20, ce qui permet d’acquérir l’année et les deux semestres [1][2].\n\n**ENIB** : Je ne trouve pas cette information dans les documents pour ENIB.",
+      "abstention": false,
+      "sources_citees": [
+        "ubo-regime-etudes-licence-deg-2024",
+        "ubo-regime-etudes-licence-deg-2024"
+      ],
+      "latence_ms": 8013,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "trouve",
+          "evidence": [
+            "10/20",
+            "10 sur 20",
+            "moyenne générale"
+          ],
+          "source": "ubo-regime-etudes-licence-deg-2024",
+          "resultat": "repondue"
+        },
+        {
+          "etablissement": "ENIB",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c02",
+      "question": "Peut-on vapoter dans les locaux de l'ENIB et d'IMT Atlantique ?",
+      "reponse": "**ENIB** : Je ne trouve pas cette information dans les documents pour l’ENIB.  \n\n**IMT Atlantique** : Il est interdit de vapoter dans tous les locaux de l’École [1] ; l’interdiction s’applique également aux bureaux individuels et aux véhicules de service, sauf espaces spécialement aménagés [2].",
+      "abstention": false,
+      "sources_citees": [
+        "imt-atlantique-reglement-interieur-2024",
+        "imt-atlantique-reglement-interieur-2024"
+      ],
+      "latence_ms": 10873,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "cigarette électronique"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "refusee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit"
+          ],
+          "source": "imt-atlantique-reglement-interieur-2024",
+          "resultat": "repondue"
+        }
+      ]
+    },
+    {
+      "id": "c03",
+      "question": "À quelle vitesse peut-on rouler sur le campus de l'ENIB et sur celui d'IMT Atlantique ?",
+      "reponse": "Sur le campus de l’ENIB, la vitesse est « limitée au pas » pour des raisons de sécurité [2].  \nSur le campus d’IMT Atlantique, la vitesse maximale autorisée est de 30 km/h [1].",
+      "abstention": false,
+      "sources_citees": [
+        "bretagne-inp-reglement-interieur",
+        "imt-atlantique-reglement-interieur-2024"
+      ],
+      "latence_ms": 10468,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "au pas"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "repondue"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "trouve",
+          "evidence": [
+            "30"
+          ],
+          "source": "imt-atlantique-reglement-interieur-2024",
+          "resultat": "repondue"
+        }
+      ]
+    },
+    {
+      "id": "c04",
+      "question": "Puis-je venir avec mon chien sur le campus de l'ENIB et d'IMT Atlantique ?",
+      "reponse": "**ENIB (Bretagne INP – ENIB)**  \nVous pouvez circuler avec votre chien sur le campus à condition qu’il soit tenu en laisse et que sa présence soit autorisée par le directeur général ou une personne déléguée ; les chiens guides ou d’assistance sont exemptés de ces restrictions [1][2].  \n\n**IMT Atlantique**  \nJe ne trouve pas cette information dans les documents pour IMT Atlantique.",
+      "abstention": false,
+      "sources_citees": [
+        "bretagne-inp-reglement-interieur",
+        "bretagne-inp-reglement-interieur"
+      ],
+      "latence_ms": 11415,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "laisse"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "repondue"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c05",
+      "question": "Combien coûtent les droits d'inscription à l'ENIB et à l'UBO ?",
+      "reponse": "Le droit d’inscription à l’ENIB s’élève à 628 € pour l’année universitaire 2025‑2026 [1].  \nJe ne trouve pas cette information dans les documents pour l’UBO.",
+      "abstention": false,
+      "sources_citees": [
+        "enib-droits-inscription-2025"
+      ],
+      "latence_ms": 10680,
+      "parties": [
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "628"
+          ],
+          "source": "enib-droits-inscription-2025",
+          "resultat": "repondue"
+        },
+        {
+          "etablissement": "UBO",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c06",
+      "question": "Ai-je le droit de garder mon téléphone portable pendant un examen à l'UBO et à IMT Atlantique ?",
+      "reponse": "**Université de Brest (UBO)** : Vous n’avez pas le droit de garder votre téléphone portable pendant l’examen ; il doit être éteint et remis au surveillant dès le début de l’épreuve [1]. Le surveillant le restitue à la fin de l’épreuve [2]. Toute utilisation ou conservation d’un appareil de stockage de données pendant l’épreuve est considérée comme une fraude [3].\n\n**IMT Atlantique** : Je ne trouve pas cette information dans les documents pour IMT Atlantique.",
+      "abstention": false,
+      "sources_citees": [
+        "ubo-charte-examens",
+        "ubo-charte-examens",
+        "ubo-charte-examens"
+      ],
+      "latence_ms": 11201,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "pas autorisé",
+            "non autorisé",
+            "ne doit",
+            "n'est pas",
+            "n’est pas",
+            "non"
+          ],
+          "source": "ubo-charte-examens",
+          "resultat": "autre"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c07",
+      "question": "Combien coûte le stationnement sur le parking de l'UBO et d'IMT Atlantique ?",
+      "reponse": "Je ne trouve pas cette information dans les documents.",
+      "abstention": true,
+      "sources_citees": [],
+      "latence_ms": 9162,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "absent",
+          "resultat": "signalee"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "absent",
+          "resultat": "signalee"
+        }
+      ]
+    },
+    {
+      "id": "c08",
+      "question": "Est-il interdit de vapoter à l'UBO, à l'ENIB et à IMT Atlantique ?",
+      "reponse": "**IMT Atlantique** – Oui, le règlement intérieur indique qu’il est interdit de fumer et de vapoter dans les locaux de l’école, y compris les bureaux individuels et les véhicules de service, sauf dans les espaces spécialement aménagés [1].\n\n**ENIB (Bretagne INP)** – Oui, le règlement précise que le vapotage est interdit tant dans les locaux de l’établissement que à bord des véhicules mis à disposition [3][2].\n\n**UBO (Université de Brest)** – Je ne trouve pas cette information dans les documents.",
+      "abstention": false,
+      "sources_citees": [
+        "imt-atlantique-reglement-interieur-2024",
+        "bretagne-inp-reglement-interieur",
+        "bretagne-inp-reglement-interieur"
+      ],
+      "latence_ms": 10203,
+      "parties": [
+        {
+          "etablissement": "UBO",
+          "attendu": "absent",
+          "resultat": "signalee"
+        },
+        {
+          "etablissement": "ENIB",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "oui"
+          ],
+          "source": "bretagne-inp-reglement-interieur",
+          "resultat": "repondue"
+        },
+        {
+          "etablissement": "IMT",
+          "attendu": "trouve",
+          "evidence": [
+            "interdit",
+            "oui"
+          ],
+          "source": "imt-atlantique-reglement-interieur-2024",
+          "resultat": "repondue"
+        }
+      ]
+    }
+  ]
+}

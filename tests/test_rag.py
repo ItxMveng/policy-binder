@@ -9,6 +9,8 @@ from policy_binder.llm import ChatCompletionsProvider, LLMResponse, make_provide
 from policy_binder.rag import (
     ABSTENTION,
     ABSTENTION_PARTIELLE,
+    SYSTEM_PROMPT,
+    SYSTEM_PROMPT_PLUSIEURS_PARTIES,
     Assistant,
     build_user_prompt,
     extract_citations,
@@ -231,6 +233,7 @@ class QueryRecordingRetriever(FakeRetriever):
 
 class PromptRecordingLLM(FakeLLM):
     def complete(self, system: str, user: str) -> LLMResponse:
+        self.system = system
         self.user = user
         return super().complete(system, user)
 
@@ -287,3 +290,12 @@ def test_tool_style_citations_are_normalized() -> None:
     answer = Assistant(FakeRetriever(PASSAGES), llm).answer("Téléphone ?")
     assert answer.text == "Le téléphone doit être déposé à l'entrée[1][2]."
     assert [c.number for c in answer.citations] == [1, 2]
+
+
+def test_partial_answer_instruction_only_for_several_institutions() -> None:
+    llm = PromptRecordingLLM("Il faut 10/20 [1].")
+    Assistant(FakeRetriever(PASSAGES), llm).answer("Quelle moyenne à l'UBO ?")
+    assert llm.system == SYSTEM_PROMPT and "pour <partie>" not in llm.system
+    hits = [_passage("ubo-x", 1, 1.0), _passage("enib-y", 1, 0.5)]
+    Assistant(FakeRetriever(hits), llm).answer("Quelle moyenne à l'UBO et à l'ENIB ?")
+    assert llm.system == SYSTEM_PROMPT_PLUSIEURS_PARTIES

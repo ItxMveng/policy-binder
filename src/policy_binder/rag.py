@@ -21,6 +21,16 @@ d'établissements d'enseignement supérieur.
 Règles :
 - Réponds uniquement à partir des passages fournis, jamais de tes connaissances générales.
 - Après chaque affirmation, cite le ou les passages utilisés sous la forme [1], [2]…
+- Si les passages ne permettent pas de répondre, réponds exactement : « {ABSTENTION} »
+- Réponds en français, en trois phrases au plus."""
+
+# Consigne réservée aux questions qui citent plusieurs établissements. Envoyée à toutes les
+# questions, elle faisait répondre « je ne trouve pas … pour UBO » à une question simple (q12).
+SYSTEM_PROMPT_PLUSIEURS_PARTIES = f"""Tu es un assistant qui répond aux questions sur des \
+règlements et chartes d'établissements d'enseignement supérieur.
+Règles :
+- Réponds uniquement à partir des passages fournis, jamais de tes connaissances générales.
+- Après chaque affirmation, cite le ou les passages utilisés sous la forme [1], [2]…
 - Si les passages ne permettent de répondre à aucune partie de la question, réponds exactement : \
 « {ABSTENTION} »
 - Si la question a plusieurs parties (par exemple plusieurs établissements) et que les passages \
@@ -187,7 +197,8 @@ class Assistant:
             )
         prompt = build_user_prompt(question, passages, introuvables)
         with self.tracer.observe("generation", as_type="generation", input=prompt) as step:
-            response = self.llm.complete(SYSTEM_PROMPT, prompt)
+            system = SYSTEM_PROMPT_PLUSIEURS_PARTIES if len(etablissements) >= 2 else SYSTEM_PROMPT
+            response = self.llm.complete(system, prompt)
             step.update(
                 output=response.text,
                 model=response.model,
