@@ -86,6 +86,7 @@ Puis `cd frontend && npm install && npm run dev` pour l'interface, sur http://lo
 - **Jeu d'évaluation modeste** (60 questions sur 9 documents publics) ; un jeu jamais vu, idéalement de vraies questions d'utilisateurs, confirmerait les chiffres. Le passage au réglage complet du reranker a été décidé après avoir vu le jeu de test (voir le rapport).
 - **Hébergement** : Azure Container Apps (crédits étudiants) au lieu de Google Cloud Run, faute de compte de facturation. Le Terraform Cloud Run est prêt et validé en CI (`infra/terraform`).
 - **Questions à plusieurs sujets** : seuls les établissements déclenchent la recherche partie par partie ; « vitesse et animaux » n'est pas découpée.
+- **Quota gratuit partagé** : la démo et les évaluations utilisent la même offre gratuite de Groq (200 000 jetons par jour pour le modèle). Le 17/10, deux évaluations complètes l'ont épuisé ; la démo répond alors aussitôt « réessayez dans quelques minutes » au lieu de rester en attente.
 - **Limites de la démo en mémoire**, sur une seule instance ; un stockage partagé (Redis) serait nécessaire pour monter en charge.
 - **Suite** :
   - relire un échantillon des verdicts du juge ;

@@ -2,6 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from policy_binder.api import app, get_assistant
+from policy_binder.llm import LLMResponse, LLMUnavailableError
 from policy_binder.rag import Assistant
 from tests.test_rag import PASSAGES, FakeLLM, FakeRetriever
 
@@ -80,3 +81,19 @@ def test_cors_origins_are_comma_separated(monkeypatch: pytest.MonkeyPatch) -> No
 
     monkeypatch.setenv("ALLOWED_ORIGINS", " https://a.vercel.app , http://localhost:5173,")
     assert Settings().cors_origins == ["https://a.vercel.app", "http://localhost:5173"]
+
+
+class QuotaReachedLLM:
+    def complete(self, system: str, user: str) -> LLMResponse:
+        raise LLMUnavailableError(275)
+
+
+def test_ask_answers_503_at_once_when_llm_quota_is_reached() -> None:
+    assistant = Assistant(FakeRetriever(PASSAGES), QuotaReachedLLM())
+    app.dependency_overrides[get_assistant] = lambda: assistant
+    try:
+        response = client.post("/ask", json={"question": "Puis-je utiliser une IA ?"})
+    finally:
+        app.dependency_overrides.clear()
+    assert response.status_code == 503
+    assert "Réessayez dans environ 5 minutes" in response.json()["detail"]

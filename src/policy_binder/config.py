@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     llm_provider: str = "groq"
     llm_model: str = "openai/gpt-oss-120b"
     llm_api_key: SecretStr | None = None
+    # Attente maximale quand le fournisseur limite le débit : au-delà, réponse 503 immédiate
+    # (quota gratuit atteint) plutôt qu'une requête qui reste en attente plusieurs minutes.
+    llm_max_wait_s: float = 20.0
     top_k: int = 5
     # Origines autorisées à appeler l'API depuis un navigateur (CORS), séparées par des virgules :
     # ALLOWED_ORIGINS=https://policy-binder.vercel.app,http://localhost:5173

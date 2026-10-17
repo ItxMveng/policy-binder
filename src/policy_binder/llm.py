@@ -19,6 +19,14 @@ MAX_RETRIES = 5
 RETRY_STATUSES = {429, 500, 502, 503}  # débit dépassé ou incident passager du fournisseur
 
 
+class LLMUnavailableError(RuntimeError):
+    """Le fournisseur demande d'attendre plus que l'appelant ne l'accepte (quota atteint)."""
+
+    def __init__(self, retry_after_s: float) -> None:
+        super().__init__(f"fournisseur indisponible, réessayer dans {retry_after_s:.0f} s")
+        self.retry_after_s = retry_after_s
+
+
 class LLMResponse(BaseModel):
     text: str
     model: str
@@ -37,6 +45,9 @@ class ChatCompletionsProvider:
 
     Les offres gratuites limitent le débit (erreur 429) : on attend le délai indiqué par
     l'en-tête Retry-After (ou un délai croissant) avant de réessayer.
+    `max_wait_s` borne l'attente cumulée : une démo en ligne préfère répondre « réessayez plus
+    tard » tout de suite plutôt que d'attendre la fin d'un quota quotidien. Sans borne (None),
+    on attend : c'est le comportement voulu pour les évaluations.
     """
 
     def __init__(
@@ -46,12 +57,14 @@ class ChatCompletionsProvider:
         api_key: str | None = None,
         client: httpx.Client | None = None,
         sleep: float = 2.0,
+        max_wait_s: float | None = None,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
         self._headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
         self._client = client or httpx.Client(timeout=120.0)
         self._sleep = sleep
+        self._max_wait_s = max_wait_s
 
     def complete(self, system: str, user: str) -> LLMResponse:
         payload = {
@@ -80,6 +93,8 @@ class ChatCompletionsProvider:
                     break
                 retry_after = response.headers.get("retry-after")
                 delay = float(retry_after) if retry_after else self._sleep * 2**attempt
+                if self._max_wait_s is not None and waited + delay > self._max_wait_s:
+                    raise LLMUnavailableError(delay)
             time.sleep(delay)
             waited += time.perf_counter() - started
         response.raise_for_status()
@@ -95,8 +110,12 @@ class ChatCompletionsProvider:
 
 
 def make_provider(
-    name: str, model: str, api_key: str | None = None, client: httpx.Client | None = None
+    name: str,
+    model: str,
+    api_key: str | None = None,
+    client: httpx.Client | None = None,
+    max_wait_s: float | None = None,
 ) -> ChatCompletionsProvider:
     if name not in BASE_URLS:
         raise ValueError(f"fournisseur inconnu : {name} (attendu : {', '.join(BASE_URLS)})")
-    return ChatCompletionsProvider(BASE_URLS[name], model, api_key, client)
+    return ChatCompletionsProvider(BASE_URLS[name], model, api_key, client, max_wait_s=max_wait_s)

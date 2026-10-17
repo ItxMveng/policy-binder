@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from policy_binder import __version__
 from policy_binder.config import get_settings
+from policy_binder.llm import LLMUnavailableError
 from policy_binder.rag import Answer, Assistant
 from policy_binder.ratelimit import DemoLimiter, client_ip
 from policy_binder.sources import load_sources
@@ -61,7 +62,9 @@ def _build_assistant() -> Assistant:
             retriever, FastEmbedReranker(), settings.rerank_candidates, settings.rerank_max_chars
         )
         min_score = settings.min_score
-    llm = make_provider(settings.llm_provider, settings.llm_model, key)
+    llm = make_provider(
+        settings.llm_provider, settings.llm_model, key, max_wait_s=settings.llm_max_wait_s
+    )
     return Assistant(retriever, llm, k=settings.top_k, min_score=min_score, tracer=_build_tracer())
 
 
@@ -116,4 +119,12 @@ def ask(
     refusal = limiter.check(client_ip(request.headers.get("x-forwarded-for"), peer))
     if refusal is not None:
         raise HTTPException(status_code=429, detail=refusal)
-    return assistant.answer(payload.question)
+    try:
+        return assistant.answer(payload.question)
+    except LLMUnavailableError as error:
+        minutes = max(1, round(error.retry_after_s / 60))
+        detail = (
+            "Le quota gratuit du modèle de langage est atteint pour le moment. "
+            f"Réessayez dans environ {minutes} minute{'s' if minutes > 1 else ''}."
+        )
+        raise HTTPException(status_code=503, detail=detail) from error

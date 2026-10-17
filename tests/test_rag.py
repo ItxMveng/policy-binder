@@ -5,7 +5,12 @@ import pytest
 
 from policy_binder.index import ScoredChunk
 from policy_binder.ingest import Chunk
-from policy_binder.llm import ChatCompletionsProvider, LLMResponse, make_provider
+from policy_binder.llm import (
+    ChatCompletionsProvider,
+    LLMResponse,
+    LLMUnavailableError,
+    make_provider,
+)
 from policy_binder.rag import (
     ABSTENTION,
     ABSTENTION_PARTIELLE,
@@ -299,3 +304,17 @@ def test_partial_answer_instruction_only_for_several_institutions() -> None:
     hits = [_passage("ubo-x", 1, 1.0), _passage("enib-y", 1, 0.5)]
     Assistant(FakeRetriever(hits), llm).answer("Quelle moyenne à l'UBO et à l'ENIB ?")
     assert llm.system == SYSTEM_PROMPT_PLUSIEURS_PARTIES
+
+
+def test_provider_gives_up_at_once_when_wait_exceeds_limit() -> None:
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(429, headers={"retry-after": "275"})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    provider = ChatCompletionsProvider("https://example.org/v1", "m", client=client, max_wait_s=20)
+    with pytest.raises(LLMUnavailableError) as error:
+        provider.complete("s", "u")
+    assert error.value.retry_after_s == 275 and len(calls) == 1
