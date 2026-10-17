@@ -4,7 +4,7 @@ La recherche (dense ou BM25) compare des représentations calculées séparémen
 la question et le passage ensemble : plus précis, plus lent, donc appliqué à 20 candidats seulement.
 """
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import Protocol
 
 from policy_binder.hybrid import Searcher
@@ -57,3 +57,37 @@ class RerankingRetriever:
         scores = self.reranker.scores(query, texts)
         ranked = sorted(zip(scores, hits, strict=True), key=lambda pair: pair[0], reverse=True)
         return [ScoredChunk(chunk=hit.chunk, score=score) for score, hit in ranked[:k]]
+
+    def search_grouped(
+        self, query: str, groups: Sequence[tuple[str, Callable[[str], bool]]]
+    ) -> list[list[ScoredChunk]]:
+        """Réserve des candidats à chaque groupe de sources, puis les reclasse en un seul passage.
+
+        Pour une question sur plusieurs établissements : sans réserve, les 20 candidats peuvent
+        tous venir d'un seul établissement, et la bonne page d'un autre n'est jamais relue. Chaque
+        groupe a sa propre requête de première étape (le sujet et le nom de l'établissement) ; le
+        reranker note ensuite le sujet seul. Le coût reste celui d'une question simple
+        (`candidates` passages relus au total).
+        """
+        par_groupe = max(1, self.candidates // len(groups))
+        pools = [
+            [
+                hit
+                for hit in self.base.search(first_stage, self.candidates * 3)
+                if keep(hit.chunk.source_id)
+            ][:par_groupe]
+            for first_stage, keep in groups
+        ]
+        unique = {hit.chunk.id: hit.chunk for pool in pools for hit in pool}
+        if not unique:
+            return [[] for _ in groups]
+        texts = [chunk.text[: self.max_chars] for chunk in unique.values()]
+        scores = dict(zip(unique, self.reranker.scores(query, texts), strict=True))
+        return [
+            sorted(
+                (ScoredChunk(chunk=hit.chunk, score=scores[hit.chunk.id]) for hit in pool),
+                key=lambda hit: hit.score,
+                reverse=True,
+            )
+            for pool in pools
+        ]

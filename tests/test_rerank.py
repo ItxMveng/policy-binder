@@ -15,9 +15,11 @@ class FixedSearcher:
     def __init__(self, hits: list[ScoredChunk]) -> None:
         self.hits = hits
         self.asked_k = 0
+        self.queries: list[str] = []
 
     def search(self, query: str, k: int = 5) -> list[ScoredChunk]:
         self.asked_k = k
+        self.queries.append(query)
         return self.hits[:k]
 
 
@@ -57,3 +59,26 @@ def test_max_chars_truncates_what_the_reranker_reads_only() -> None:
     hits = RerankingRetriever(base, reranker, max_chars=400).search("q", k=1)
     assert len(reranker.seen[0]) == 400
     assert len(hits[0].chunk.text) == 1000  # le LLM reçoit le passage complet
+
+
+def _sourced(chunk_id: str, source_id: str, text: str) -> ScoredChunk:
+    chunk = Chunk(id=chunk_id, source_id=source_id, title="T", page=1, text=text)
+    return ScoredChunk(chunk=chunk, score=0.0)
+
+
+def test_grouped_search_reserves_candidates_for_each_group() -> None:
+    # Sans réserve, les 4 premiers candidats viennent tous de l'UBO et la page ENIB n'est pas relue.
+    hits = [_sourced(f"u{i}", "ubo-x", "vapoter interdit") for i in range(6)]
+    hits.append(_sourced("e1", "enib-y", "cigarette électronique interdite vapoter"))
+    base = FixedSearcher(hits)
+    retriever = RerankingRetriever(base, KeywordReranker(), candidates=4)
+    ubo, enib = retriever.search_grouped(
+        "vapoter interdit",
+        [
+            ("vapoter UBO", lambda s: s.startswith("ubo-")),
+            ("vapoter ENIB", lambda s: s.startswith("enib-")),
+        ],
+    )
+    assert base.asked_k == 12 and base.queries == ["vapoter UBO", "vapoter ENIB"]
+    assert [h.chunk.id for h in ubo] == ["u0", "u1"]
+    assert [h.chunk.id for h in enib] == ["e1"] and enib[0].score == 1.0

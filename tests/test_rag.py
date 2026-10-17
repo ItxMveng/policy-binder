@@ -6,7 +6,15 @@ import pytest
 from policy_binder.index import ScoredChunk
 from policy_binder.ingest import Chunk
 from policy_binder.llm import ChatCompletionsProvider, LLMResponse, make_provider
-from policy_binder.rag import ABSTENTION, Assistant, build_user_prompt, extract_citations
+from policy_binder.rag import (
+    ABSTENTION,
+    ABSTENTION_PARTIELLE,
+    Assistant,
+    build_user_prompt,
+    extract_citations,
+    is_abstention,
+    is_partial,
+)
 
 PASSAGES = [
     ScoredChunk(
@@ -202,3 +210,80 @@ def test_trace_without_generation_when_abstaining_before_llm() -> None:
     tracer = RecordingTracer()
     Assistant(FakeRetriever(PASSAGES), FakeLLM("non"), min_score=0.9, tracer=tracer).answer("?")
     assert [name for name, _ in tracer.steps] == ["question", "recherche"]
+
+
+def _passage(source_id: str, page: int, score: float) -> ScoredChunk:
+    chunk = Chunk(
+        id=f"{source_id}-p{page}-c0", source_id=source_id, title=source_id, page=page, text="…"
+    )
+    return ScoredChunk(chunk=chunk, score=score)
+
+
+class QueryRecordingRetriever(FakeRetriever):
+    def __init__(self, passages: list[ScoredChunk]) -> None:
+        super().__init__(passages)
+        self.queries: list[tuple[str, int]] = []
+
+    def search(self, query: str, k: int = 5) -> list[ScoredChunk]:
+        self.queries.append((query, k))
+        return super().search(query, k)
+
+
+class PromptRecordingLLM(FakeLLM):
+    def complete(self, system: str, user: str) -> LLMResponse:
+        self.user = user
+        return super().complete(system, user)
+
+
+def test_partial_answer_keeps_citations_and_is_not_an_abstention() -> None:
+    text = (
+        "À l'UBO, l'année est validée avec une moyenne d'au moins 10/20 [1]. "
+        f"{ABSTENTION_PARTIELLE} l'ENIB."
+    )
+    answer = Assistant(FakeRetriever(PASSAGES), FakeLLM(text)).answer(
+        "Moyenne pour réussir l'année ?"
+    )
+    assert not answer.abstained and answer.partial
+    assert [c.number for c in answer.citations] == [1]
+
+
+def test_only_abstention_sentences_is_a_full_abstention() -> None:
+    assert is_abstention(f"« {ABSTENTION} »")
+    assert is_abstention(f"{ABSTENTION_PARTIELLE} l'UBO. {ABSTENTION_PARTIELLE} l'ENIB.")
+    assert not is_partial(ABSTENTION)
+    assert not is_abstention("Il faut 10/20 [1].")
+
+
+def test_question_on_two_institutions_is_searched_per_institution() -> None:
+    hits = [
+        _passage("ubo-regime-etudes", 7, -1.8),
+        _passage("imt-reglement", 2, -1.0),
+        _passage("ubo-regime-etudes", 13, -2.7),
+        _passage("enib-droits", 1, -4.4),
+    ]
+    retriever = QueryRecordingRetriever(hits)
+    llm = PromptRecordingLLM(f"Il faut 10/20 [1]. {ABSTENTION_PARTIELLE} l'ENIB.")
+    question = "Quelle moyenne pour réussir mon année à l'UBO, à l'ENIB et à IMT Atlantique ?"
+    hits.pop(1)  # aucun candidat pour IMT Atlantique
+    answer = Assistant(retriever, llm, min_score=-2.36).answer(question)
+    # Recherche du sujet seul, une fois, sur assez de candidats pour couvrir chaque établissement.
+    assert retriever.queries == [("Quelle moyenne pour réussir mon année ?", 20)]
+    # Seuil sur le meilleur passage seulement : le passage ENIB, plus faible, est transmis au LLM.
+    sources = [h.chunk.source_id for h in answer.retrieved]
+    assert sources == ["ubo-regime-etudes", "ubo-regime-etudes", "enib-droits"]
+    assert "Aucun passage pertinent n'a été trouvé pour : IMT Atlantique." in llm.user
+    assert answer.partial and not answer.abstained
+
+
+def test_two_institutions_without_any_answer_abstain_before_llm() -> None:
+    retriever = FakeRetriever([_passage("ubo-x", 1, -5.0), _passage("enib-y", 1, -6.0)])
+    llm = FakeLLM("ne doit pas être appelé")
+    answer = Assistant(retriever, llm, min_score=-2.36).answer("Repas à l'UBO et à l'ENIB ?")
+    assert answer.abstained and answer.abstained_before_llm and llm.calls == 0
+
+
+def test_tool_style_citations_are_normalized() -> None:
+    llm = FakeLLM("Le téléphone doit être déposé à l'entrée【1†L3-L5】【2†L…】.")
+    answer = Assistant(FakeRetriever(PASSAGES), llm).answer("Téléphone ?")
+    assert answer.text == "Le téléphone doit être déposé à l'entrée[1][2]."
+    assert [c.number for c in answer.citations] == [1, 2]

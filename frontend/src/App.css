@@ -94,6 +94,7 @@ header h1 {
 
 .answer-text {
   margin: 0 0 12px;
+  white-space: pre-line;
   font-size: 1.05rem;
 }
 

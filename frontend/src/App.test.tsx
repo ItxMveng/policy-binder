@@ -91,4 +91,20 @@ describe('App', () => {
     expect(await screen.findByText(/adressez-vous au service concerné/)).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /page/ })).not.toBeInTheDocument()
   })
+
+  it('signale une réponse partielle tout en gardant la source citée', async () => {
+    mockApi(
+      answer({
+        text:
+          '**UBO** : il faut **10/20** [1].\n\n' +
+          "**ENIB** : Je ne trouve pas cette information dans les documents pour l'ENIB.",
+        partial: true,
+      }),
+    )
+    render(<App />)
+    await userEvent.type(screen.getByLabelText('Votre question'), "Moyenne à l'UBO et à l'ENIB ?")
+    await userEvent.click(screen.getByRole('button', { name: 'Demander' }))
+    expect(await screen.findByText(/n'est pas couverte par les documents/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /page 3/ })).toBeInTheDocument()
+  })
 })
