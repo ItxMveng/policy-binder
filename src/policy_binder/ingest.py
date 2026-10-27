@@ -94,10 +94,18 @@ def chunk_pages(source: Source, pages: Iterable[tuple[int, str]]) -> list[Chunk]
     return chunks
 
 
-def ingest_sources(sources: list[Source], raw_dir: Path) -> list[Chunk]:
+def ingest_sources(sources: list[Source], raw_dir: Path, skip_missing: bool = False) -> list[Chunk]:
+    """`skip_missing` : ignorer un PDF absent (téléchargement en échec) au lieu d'échouer.
+
+    Utilisé au démarrage du conteneur : un site officiel qui déplace un document ne doit pas
+    rendre toute la démo indisponible. Le déploiement, lui, reste strict.
+    """
     chunks: list[Chunk] = []
     for source in sources:
-        chunks.extend(chunk_pages(source, pdf_pages(raw_pdf_path(raw_dir, source))))
+        path = raw_pdf_path(raw_dir, source)
+        if skip_missing and not path.exists():
+            continue
+        chunks.extend(chunk_pages(source, pdf_pages(path)))
     return chunks
 
 

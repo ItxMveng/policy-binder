@@ -1,6 +1,15 @@
 from pathlib import Path
 
-from policy_binder.ingest import Chunk, chunk_pages, clean_text, read_chunks, split_text
+import pytest
+
+from policy_binder.ingest import (
+    Chunk,
+    chunk_pages,
+    clean_text,
+    ingest_sources,
+    read_chunks,
+    split_text,
+)
 from policy_binder.sources import Source
 
 SOURCE = Source.model_validate(
@@ -50,3 +59,9 @@ def test_chunks_roundtrip_jsonl(tmp_path: Path) -> None:
     path = tmp_path / "chunks.jsonl"
     write_chunks([chunk], path)
     assert read_chunks(path) == [chunk]
+
+
+def test_missing_pdf_is_skipped_only_on_request(tmp_path: Path) -> None:
+    assert ingest_sources([SOURCE], tmp_path, skip_missing=True) == []
+    with pytest.raises(FileNotFoundError):
+        ingest_sources([SOURCE], tmp_path)

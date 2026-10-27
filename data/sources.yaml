@@ -1,4 +1,4 @@
-# Corpus de Studeria Assistant : documents institutionnels PUBLICS, téléchargés depuis les sites officiels.
+# Corpus du Classeur : documents institutionnels PUBLICS, téléchargés depuis les sites officiels.
 # Les PDF ne sont pas versionnés : `uv run python scripts/download_sources.py` les place dans data/raw/.
 # consulted_on = date à laquelle l'URL a été vérifiée (réponse HTTP 200, type application/pdf).
 
@@ -28,8 +28,10 @@ sources:
     title: Charte d'utilisation de l'IA générative à l'Université de Brest (2026)
     institution: Université de Brest (UBO)
     kind: charte
-    url: https://www.univ-brest.fr/sites/nouveau.univ-brest.fr/files/2026-03/Charte-IA-UBO_2026.pdf
-    consulted_on: 2026-10-11
+    # Version d'octobre 2026 : l'adresse de mars renvoie 404 depuis la mise en ligne de celle-ci.
+    # Écarts : date d'approbation (p. 2), liste des IAg souveraines complétée (p. 11).
+    url: https://www.univ-brest.fr/sites/nouveau.univ-brest.fr/files/2026-10/Charte-IA-UBO-oct-2026.pdf
+    consulted_on: 2026-10-27
 
   - id: ubo-charte-examens
     title: Charte des examens de l'Université de Brest
