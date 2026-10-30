@@ -170,6 +170,26 @@ Relecture des deux parties restantes :
 
 Le premier essai envoyait la consigne de réponse partielle à toutes les questions. q12 (UBO seul) a alors répondu « je ne trouve pas … pour UBO » au lieu des 48 heures qu'elle trouvait jusque-là. La version retenue réserve cette consigne aux questions qui citent plusieurs établissements ; les questions simples gardent leur recherche, leur seuil et leur consigne. Les écarts d'exactitude entre exécutions (70 à 77,5 %) restent dans les intervalles de confiance, et les deux questions qui changent de verdict passent de « partiel » à « correct ». Résultats : `eval/results/plusieurs-etablissements*.json(l)` (essai1 = premier essai) et `eval/results/composees-*.json`.
 
+## Mise à jour du corpus (27/10/2026)
+L'Université de Brest a publié une nouvelle version de sa charte IA (octobre 2026), et l'adresse de mars renvoie 404. Comparaison page par page des deux versions : seules les pages 2 (date d'approbation) et 11 (liste des IA génératives souveraines, complétée par l'Assistant IA de la Suite numérique de l'État) changent. La référence de q06, qui porte sur cette liste, a été mise à jour en conséquence.
+
+Évaluation complète sur le corpus à jour (`eval/results/corpus-oct-2026.json`) :
+
+| | Version retenue P1-15 (ancienne charte) | **Corpus à jour** |
+|---|---|---|
+| Exactitude | 75,0 % (IC 60–86 %) | **70,0 % (IC 55–82 %)** |
+| Correct ou partiel | 95,0 % | **92,5 %** |
+| Réponses incorrectes (sur 40) | 0 | **1** (q22) |
+| Refus injustifiés (sur 40) | 2 | **2** |
+| Abstention hors corpus | 20/20 | **20/20** |
+| Bonne page parmi les passages | 95,0 % | **95,0 %** |
+| Latence p50 / p95 (local) | 11,2 s / 15,8 s | **10,2 s / 17,0 s** |
+| Coût pour 1 000 questions | 0,25 $ | **0,26 $** |
+
+q06 est jugée correcte avec la nouvelle liste. La réponse incorrecte est q22, dont la référence est déjà signalée comme incomplète (voir l'analyse des erreurs et les limites) : le guide prévoit 3 semaines en règle générale et 15 jours en cas de force majeure. La réponse a cette fois donné les 15 jours, et le juge l'a comparée à une référence qui ne cite que les 3 semaines. Aucun document lié à q22 n'a changé : c'est la variabilité du LLM sur une référence ambiguë, et cette référence est à corriger lors de la prochaine révision du jeu.
+
+Évaluation CI sur le même corpus (27/10/2026) : 12/14 correct ou partiel, 6/6 abstentions, 1 incorrecte, 1 refus, donc dans les seuils.
+
 ## Reproduire
 ```bash
 uv run python scripts/download_sources.py   # 9 PDF officiels → data/raw/

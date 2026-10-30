@@ -65,6 +65,8 @@ Sur les 60 mêmes questions, avec le même modèle et le même juge. IC = interv
 
 **Latence de la démo en ligne** (6 questions, 16/10/2026) : médiane **8,2 s**, maximum 8,6 s, et environ 12,5 s pour la première question après une période sans visite. Les traces montrent qu'elle vient presque entièrement du reranker sur CPU (environ 1 s pour la génération).
 
+**Corpus à jour** (nouvelle version de la charte IA de l'UBO, 27/10/2026) : exactitude 70 % (IC 55–82 %), 20/20 abstentions, 1 réponse jugée incorrecte sur une question dont la référence est connue comme incomplète ; détail dans le rapport.
+
 **Évaluation en CI** : 13/14 réponses correctes ou partielles, 6/6 abstentions et 0 réponse incorrecte au premier passage, dans les seuils.
 
 ## Démo

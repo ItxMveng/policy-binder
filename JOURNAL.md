@@ -1,5 +1,11 @@
 # JOURNAL
 
+## 2026-10-27 — Correctif : nouvelle version de la charte IA de l'UBO
+- Fait : l'UBO a publié la charte IA d'octobre 2026 et l'ancienne adresse renvoie 404, ce qui empêchait le conteneur de démarrer (API en 503) ; nouvelle adresse, référence de q06 mise à jour, démarrage tolérant (un PDF introuvable est signalé et ignoré au lieu de bloquer l'API) ; le redéploiement attend la réactivation du cluster Qdrant Cloud.
+- Chiffre mesuré : corpus à jour : exactitude 70 % (IC 55–82 %), 20/20 abstentions hors corpus, 2 refus sur 40, 1 réponse jugée incorrecte (q22, référence connue comme incomplète) ; CI : 12/14, 6/6, 1 incorrecte, 1 refus, dans les seuils
+- Décision technique : comparer les deux versions page par page avant de remplacer le document : seules deux pages changent, une seule question du jeu est concernée et sa référence est mise à jour, au lieu de tout réécrire.
+- Visuel disponible : aucun
+
 ## 2026-10-17 — P1-15 Questions sur plusieurs établissements
 - Fait : les questions qui citent plusieurs établissements sont cherchées établissement par établissement (candidats réservés, reranker sur le sujet seul, seuil inchangé) ; réponse partie par partie avec mention explicite de la partie absente des documents ; jeu de 8 questions composées et script de notation ; interface : avertissement de réponse partielle.
 - Chiffre mesuré : questions composées : 8 parties sur 10 répondues et citées contre 1 sur 10 avant, 7/7 parties absentes signalées, 0 affirmée ; sur les 60 questions, pas de régression : exactitude 75 % (IC 60–86 %), 0 réponse incorrecte, 2 refus sur 40, 20/20 abstentions
