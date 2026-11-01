@@ -1,5 +1,12 @@
 # JOURNAL
 
+## 2026-11-01 — LIVRÉ
+- Fait : P1 livré. Le Classeur répond aux questions sur 9 règlements et chartes publics (ENIB / Bretagne INP, UBO, IMT Atlantique) en citant la page, s'abstient quand l'information n'y est pas et répond partie par partie aux questions sur plusieurs établissements ; recherche hybride + reranker + seuil calibré, évaluation en CI, API sur Azure Container Apps (Terraform, OIDC), index Qdrant Cloud, interface sur Vercel, traces Langfuse. Vérifié en ligne le 01/11 : question UBO + ENIB répondue pour l'UBO (10/20, page 7 citée) avec la partie ENIB signalée comme absente, question hors corpus en abstention.
+- Chiffre mesuré : exactitude 70 % (IC 55–82 %) contre 42,5 % pour la base naïve ; 20/20 abstentions sur les questions hors corpus ; refus injustifiés 5 % contre 37,5 % (60 questions, corpus à jour du 27/10)
+- Décision technique : un assistant qui dit « je ne trouve pas » plutôt que d'inventer, et des chiffres publiés seulement après mesure, avec leurs intervalles et leurs limites.
+- Visuel disponible : docs/media/demo.gif
+- URL de démo : https://policy-binder.vercel.app
+
 ## 2026-10-27 — Correctif : nouvelle version de la charte IA de l'UBO
 - Fait : l'UBO a publié la charte IA d'octobre 2026 et l'ancienne adresse renvoie 404, ce qui empêchait le conteneur de démarrer (API en 503) ; nouvelle adresse, référence de q06 mise à jour, démarrage tolérant (un PDF introuvable est signalé et ignoré au lieu de bloquer l'API) ; le redéploiement attend la réactivation du cluster Qdrant Cloud.
 - Chiffre mesuré : corpus à jour : exactitude 70 % (IC 55–82 %), 20/20 abstentions hors corpus, 2 refus sur 40, 1 réponse jugée incorrecte (q22, référence connue comme incomplète) ; CI : 12/14, 6/6, 1 incorrecte, 1 refus, dans les seuils
